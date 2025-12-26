@@ -59,21 +59,23 @@ async function register(req, res) {
             body: JSON.stringify({ username, email, password })
         });
 
-        const data = await response.json(); // parsear solo UNA vez
+        const data = await response.json(); // parsear solo una vez
 
         if (!response.ok) {
-            let msg = data.detail || data.message || "Error al registrarse";
+            // Manejo de error
+            const msg = data.detail || data.message || "Error al registrarse";
             return res.render("auth/register", { error: msg, success: null, user: null });
         }
 
-        // Éxito: mostrar mensaje del backend
-        return res.render("auth/register", { error: null, success: data.message || "Registro exitoso, inicia sesión", user: null });
+        // Registro exitoso
+        return res.render("auth/register", { error: null, success: "Registro exitoso, inicia sesión", user: null });
 
     } catch (err) {
         console.error("Error register:", err);
         return res.render("auth/register", { error: "Error de conexión con el servidor", success: null, user: null });
     }
 }
+
 
 // ---------- LOGOUT ----------
 function logout(req, res) {
