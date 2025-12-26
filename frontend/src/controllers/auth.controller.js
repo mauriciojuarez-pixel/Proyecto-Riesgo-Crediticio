@@ -1,4 +1,5 @@
 // frontend/src/controllers/auth.controller.js
+// frontend/src/controllers/auth.controller.js
 const authService = require("../services/auth.service.js");
 
 // ---------- RENDER LOGIN ----------
@@ -18,7 +19,7 @@ async function login(req, res) {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            maxAge: 3600000
+            maxAge: 3600000 // 1 hora
         };
 
         res.cookie("token", data.access_token, cookieOptions);
@@ -27,14 +28,21 @@ async function login(req, res) {
         return res.redirect("/dashboard");
     } catch (err) {
         console.error("Error login:", err);
-        const msg = err.detail || err.message || "Error al iniciar sesión";
+        const msg = (err.detail && typeof err.detail === "string") ? err.detail :
+                    (err.message ? err.message : "Error al iniciar sesión");
         return res.render("auth/login", { error: msg, user: null });
     }
 }
 
 // ---------- RENDER REGISTER ----------
 function renderRegister(req, res) {
-    res.render("auth/register", { error: null, success: null, user: null });
+    res.render("auth/register", {
+        error: null,
+        success: null,
+        user: null,
+        prevUsername: "",
+        prevEmail: ""
+    });
 }
 
 // ---------- REGISTER ----------
@@ -48,7 +56,9 @@ async function register(req, res) {
         return res.render("auth/register", {
             error: null,
             success: "Usuario registrado correctamente, inicia sesión",
-            user: null
+            user: null,
+            prevUsername: "",
+            prevEmail: ""
         });
 
     } catch (err) {
@@ -56,13 +66,11 @@ async function register(req, res) {
 
         let msg = "Error al registrarse";
 
-        // Manejar errores de FastAPI
+        // Manejar errores de FastAPI (array de validaciones o string)
         if (err.detail) {
             if (Array.isArray(err.detail)) {
-                // Combinar todos los mensajes en un string
                 msg = err.detail.map(e => {
-                    // mostrar campo + mensaje
-                    const campo = e.loc && e.loc.length > 1 ? e.loc[1] : "campo";
+                    const campo = (e.loc && e.loc.length > 1) ? e.loc[1] : "campo";
                     return `${campo}: ${e.msg}`;
                 }).join(", ");
             } else if (typeof err.detail === "string") {
@@ -72,17 +80,16 @@ async function register(req, res) {
             msg = err.message;
         }
 
-        // auth.controller.js - register
+        // Devolver datos previos para que el usuario no tenga que reescribirlos
         return res.render("auth/register", {
             error: msg,
             success: null,
             user: null,
-            prevUsername: username,
-            prevEmail: email
+            prevUsername: username || "",
+            prevEmail: email || ""
         });
     }
 }
-
 
 // ---------- LOGOUT ----------
 function logout(req, res) {
