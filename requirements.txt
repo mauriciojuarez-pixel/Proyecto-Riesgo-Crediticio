@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+pymongo
+python-jose
+passlib[bcrypt]
+pydantic
+scikit-learn
+scikit-fuzzy
+numpy
+pandas
+joblib
+python-multipart
+
+
+# pip install -r requirements.txt
