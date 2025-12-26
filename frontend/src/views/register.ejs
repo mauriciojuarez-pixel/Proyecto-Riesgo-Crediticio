@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro - Sistema de Riesgo Crediticio</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="register-container">
+        <h2>Registro de Usuario</h2>
+
+        <!-- Formulario de registro -->
+        <form id="registerForm">
+            <input type="text" name="username" id="regUsername" placeholder="Nombre completo" required>
+            <input type="email" name="email" id="regEmail" placeholder="Correo electrónico" required>
+            <input type="password" name="password" id="regPassword" placeholder="Contraseña" required>
+            <button type="submit">Registrar</button>
+        </form>
+
+        <!-- Botón para ir al login -->
+        <button id="goLogin">Ya tengo cuenta. Iniciar sesión</button>
+
+        <!-- Mensajes de estado -->
+        <div id="message"></div>
+    </div>
+
+    <script>
+        // Ir a login
+        document.getElementById('goLogin').addEventListener('click', () => {
+            window.location.href = '/';
+        });
+
+        // Manejar envío del registro
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('regUsername').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+
+            try {
+                const response = await fetch('http://localhost:8000/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('message').innerText = "Registro exitoso. Redirigiendo al login...";
+                    setTimeout(() => window.location.href = '/', 1500);
+                } else {
+                    document.getElementById('message').innerText = data.detail || "Error en el registro";
+                }
+            } catch (err) {
+                document.getElementById('message').innerText = "No se pudo conectar con el servidor.";
+            }
+        });
+    </script>
+</body>
+</html>

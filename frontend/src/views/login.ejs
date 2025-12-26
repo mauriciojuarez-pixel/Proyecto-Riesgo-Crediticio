@@ -1,0 +1,25 @@
+<!-- frontend/src/views/login.ejs -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Sistema de Riesgo Crediticio</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <h2>Iniciar Sesión</h2>
+        <form id="loginForm">
+            <input type="email" id="email" placeholder="Correo" required>
+            <input type="password" id="password" placeholder="Contraseña" required>
+            <button type="submit">Login</button>
+        </form>
+
+        <button id="goRegister">No tengo cuenta. Registrarme</button>
+
+        <div id="message"></div>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
