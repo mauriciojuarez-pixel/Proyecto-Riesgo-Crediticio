@@ -1,66 +1,43 @@
-// frontend/app.js
 const express = require("express");
-const path = require("path");
 const session = require("express-session");
-require("dotenv").config();
-
-// -------------------- App --------------------
+const path = require("path");
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// -------------------- Middlewares --------------------
-const { ensureAuth } = require("./src/middlewares/auth.middleware.js");
-
-// -------------------- Routers --------------------
-const authRoutes = require("./src/routes/auth.routes.js");
-const riskRoutes = require("./src/routes/risk.routes.js");
-const adminRoutes = require("./src/routes/admin.routes.js");
-
-// -------------------- Configuración --------------------
+// Middleware de parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
 
-// EJS
-app.set("views", path.join(__dirname, "src/views"));
-app.set("view engine", "ejs");
-
-// -------------------- Sesiones --------------------
+// Session
 app.use(session({
-    name: "risk.sid",
-    secret: process.env.SESSION_SECRET || "dev-secret",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 1000 * 60 * 60 * 4
-    }
+  secret: process.env.SESSION_SECRET || "TU_SECRET_KEY",
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // true si usas HTTPS
 }));
 
-// -------------------- Routers --------------------
+// Carpeta de vistas
+app.set("views", path.join(__dirname, "src/views")); // <- aquí el cambio clave
+app.set("view engine", "ejs");
+
+// Archivos estáticos
+app.use(express.static(path.join(__dirname, "src/public"))); // si tienes carpeta public
+
+// Rutas
+const authRoutes = require("./src/routes/auth.routes.js");
+const adminRoutes = require("./src/routes/admin.routes.js");
+const riskRoutes = require("./src/routes/risk.routes.js");
+
 app.use("/auth", authRoutes);
-app.use("/risk", riskRoutes);
 app.use("/admin", adminRoutes);
+app.use("/risk", riskRoutes);
 
-// -------------------- Rutas --------------------
-// -------------------- Rutas --------------------
+// Ruta raíz
 app.get("/", (req, res) => {
-    res.redirect("/auth/login");
+  res.redirect("/dashboard"); // o "/auth/login" si quieres que no logueado vaya a login
 });
 
-// Dashboard protegido
-app.get("/dashboard", ensureAuth, (req, res) => {
-    // Se pasa directamente el user desde la sesión
-    res.render("dashboard", { user: req.session.user });
-});
-
-
-// -------------------- Manejo de errores --------------------
-const { errorHandler } = require("./src/middlewares/error.middleware.js");
-app.use(errorHandler);
-
-// -------------------- Servidor --------------------
-app.listen(PORT, "0.0.0.0", () => {
+// Puerto
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
     console.log(`Frontend activo en puerto ${PORT}`);
 });
