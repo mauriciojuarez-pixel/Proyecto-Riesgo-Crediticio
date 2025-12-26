@@ -1,22 +1,27 @@
+<!-- frontend/src/views/dashboard.ejs -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard - Riesgo Crediticio</title>
+    <title>Login - Riesgo Crediticio</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <nav>
-        <span>Bienvenido, <%= user.username %></span>
-        <a href="/auth/logout">Cerrar Sesión</a>
-    </nav>
-
     <div class="container">
-        <h1>Dashboard</h1>
-        <p>Bienvenido al panel principal del sistema de evaluación de riesgo crediticio.</p>
+        <h1>Iniciar Sesión</h1>
 
-        <a href="/risk">Evaluar Riesgo</a><br>
-        <a href="/admin/usuarios">Administración</a>
+        <% if (error) { %>
+            <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+
+        <form action="/auth/login" method="POST">
+            <input type="email" name="email" placeholder="Correo electrónico" required>
+            <input type="password" name="password" placeholder="Contraseña" required>
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+
+        <p>¿No tienes cuenta? <a href="/auth/register">Regístrate aquí</a></p>
     </div>
 </body>
 </html>
