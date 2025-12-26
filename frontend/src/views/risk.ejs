@@ -1,5 +1,7 @@
 <!-- frontend/src/views/risk.ejs -->
 
+<!-- frontend/src/views/risk.ejs -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,32 +9,14 @@
     <title>Evaluación de Riesgo - Riesgo Crediticio</title>
     <link rel="stylesheet" href="/css/styles.css">
     <style>
-        .resultado {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            font-weight: bold;
-        }
-        .resultado.exito {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .resultado.error {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        form input, form button {
-            display: block;
-            margin: 10px 0;
-            padding: 8px;
-            width: 100%;
-            max-width: 400px;
-        }
+        .resultado { margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: bold; }
+        .resultado.exito { background-color: #d4edda; color: #155724; }
+        .resultado.error { background-color: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
     <nav>
-        <span>Bienvenido, <%= user ? user.username : 'Invitado' %></span>
+        <span>Bienvenido, <%= user.username %></span>
         <a href="/auth/logout">Cerrar Sesión</a>
     </nav>
 
@@ -59,8 +43,6 @@
             const form = document.getElementById("riskForm");
             const resultadoDiv = document.getElementById("resultado");
 
-            if (!form) return;
-
             form.addEventListener("submit", async (e) => {
                 e.preventDefault();
                 resultadoDiv.textContent = "Evaluando riesgo...";
@@ -69,29 +51,15 @@
                 const formData = new FormData(form);
                 const datos = Object.fromEntries(formData.entries());
 
-                // Convertir a números
                 datos.ingreso = parseFloat(datos.ingreso);
                 datos.deuda_ratio = parseFloat(datos.deuda_ratio);
                 datos.antiguedad = parseInt(datos.antiguedad);
                 datos.estabilidad_laboral = parseInt(datos.estabilidad_laboral);
 
-                // Agregar user_id desde cookie (si existe)
-                const userCookie = document.cookie.split('; ').find(row => row.startsWith('user='));
-                if (userCookie) {
-                    try {
-                        const userObj = JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
-                        datos.cliente_id = userObj.user_id;
-                    } catch (err) {
-                        console.error("Error parseando cookie user:", err);
-                    }
-                }
-
                 try {
                     const res = await fetch("/risk/predict", {
                         method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
+                        headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(datos)
                     });
 
@@ -103,12 +71,7 @@
                         return;
                     }
 
-                    // Mostrar resultados del backend (modelo ML + fuzzy)
-                    let textoResultado = `Nivel de riesgo: ${data.riesgo || 'Indefinido'}`;
-                    if (data.score) textoResultado += `\nScore: ${data.score}`;
-                    if (data.fuzzy) textoResultado += `\nFuzzy Logic: ${data.fuzzy}`;
-
-                    resultadoDiv.textContent = textoResultado;
+                    resultadoDiv.textContent = `Nivel de riesgo: ${data.riesgo || '-'} | Score: ${data.score || '-'}`;
                     resultadoDiv.classList.add("exito");
 
                 } catch (err) {

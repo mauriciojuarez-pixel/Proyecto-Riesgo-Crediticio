@@ -1,20 +1,17 @@
 // frontend/src/controllers/risk.controller.js
 
 
+// frontend/src/controllers/risk.controller.js
 const riskService = require("../services/risk.service.js");
 
 // Renderiza la página de evaluación de riesgo
 function renderRisk(req, res) {
     let user = null;
 
-    // Intentar obtener user desde cookie
-    if (req.cookies.user) {
-        try {
-            user = JSON.parse(decodeURIComponent(req.cookies.user));
-        } catch (err) {
-            console.error("Error parseando cookie user:", err);
-            user = null;
-        }
+    try {
+        user = req.cookies.user ? JSON.parse(req.cookies.user) : null;
+    } catch (err) {
+        console.error("Error parseando cookie de usuario:", err);
     }
 
     if (!user) {
@@ -31,17 +28,8 @@ function renderRisk(req, res) {
 // Procesa la evaluación de riesgo
 async function predictRisk(req, res) {
     try {
-        let user = null;
-
-        if (req.cookies.user) {
-            try {
-                user = JSON.parse(decodeURIComponent(req.cookies.user));
-            } catch (err) {
-                console.error("Error parseando cookie user:", err);
-            }
-        }
-
         const token = req.cookies.token;
+        const user = req.cookies.user ? JSON.parse(req.cookies.user) : null;
 
         if (!user || !user.user_id) {
             return res.status(401).json({ error: "Usuario no identificado. Inicie sesión nuevamente." });
@@ -51,11 +39,10 @@ async function predictRisk(req, res) {
             cliente_id: user.user_id,
             ingreso: parseFloat(req.body.ingreso),
             deuda_ratio: parseFloat(req.body.deuda_ratio),
-            antiguedad: parseFloat(req.body.antiguedad),
-            estabilidad_laboral: parseFloat(req.body.estabilidad_laboral)
+            antiguedad: parseInt(req.body.antiguedad),
+            estabilidad_laboral: parseInt(req.body.estabilidad_laboral)
         };
 
-        // Llamada al servicio que retorna score + fuzzy logic
         const resultado = await riskService.evaluarRiesgo(datos, token);
 
         res.json(resultado);
