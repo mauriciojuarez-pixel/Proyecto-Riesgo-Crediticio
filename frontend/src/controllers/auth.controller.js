@@ -45,6 +45,7 @@ function logout(req, res) {
 }
 
 // -------------------- REGISTER --------------------
+// -------------------- REGISTER --------------------
 async function register(req, res) {
     const { username, email, password } = req.body;
 
@@ -58,16 +59,23 @@ async function register(req, res) {
         const data = await response.json();
 
         if (!response.ok) {
-            // Renderiza register con error
-            return res.render("register", { error: data.detail || "Error al registrarse", success: null });
+            // Si hubo error en el backend, mostrarlo en la vista
+            return res.render("auth/register", { error: data.detail || "Error al registrarse", resultado: null });
         }
 
-        // Registro exitoso
-        return res.render("register", { error: null, success: "Registro exitoso, inicia sesión" });
+        // Registro exitoso: enviamos la info al frontend en "resultado"
+        return res.render("auth/register", {
+            error: null,
+            resultado: {
+                user_id: data.user.id || data.user._id,
+                nombre: data.user.username,
+                email: data.user.email
+            }
+        });
 
     } catch (err) {
         console.error("Error register:", err);
-        return res.render("register", { error: "Error de conexión con el servidor", success: null });
+        return res.render("auth/register", { error: "Error de conexión con el servidor", resultado: null });
     }
 }
 

@@ -104,28 +104,37 @@
     </style>
 </head>
 <body>
-    <nav>
-        <span>Riesgo Crediticio</span>
-        <a href="/auth/login">Iniciar Sesión</a>
-    </nav>
-
     <div class="container">
         <h1>Registro de Usuario</h1>
 
-        <% if (success) { %>
-            <div class="alert alert-success"><%= success %></div>
-        <% } %>
-
         <% if (error) { %>
-            <div class="alert alert-error"><%= error %></div>
+            <div class="alert alert-danger"><%= error %></div>
         <% } %>
 
         <form action="/auth/register" method="POST">
-            <input type="text" name="username" placeholder="Nombre de usuario" required>
-            <input type="email" name="email" placeholder="Correo electrónico" required>
-            <input type="password" name="password" placeholder="Contraseña" required>
-            <button type="submit">Registrarse</button>
+            <label>Nombre:</label>
+            <input type="text" name="username" placeholder="Tu nombre completo" required>
+
+            <label>Email:</label>
+            <input type="email" name="email" placeholder="tu@email.com" required>
+
+            <label>Contraseña:</label>
+            <input type="password" name="password" placeholder="********" required>
+
+            <button type="submit">Registrar</button>
         </form>
+
+        <% if (resultado) { %>
+            <div class="alert alert-success">
+                <h2>Registro exitoso</h2>
+                <p>ID del usuario: <%= resultado.user_id %></p>
+                <p>Nombre: <%= resultado.nombre %></p>
+                <p>Email: <%= resultado.email %></p>
+            </div>
+        <% } %>
+
+        <p>¿Ya tienes cuenta? <a href="/auth/login">Inicia sesión</a></p>
     </div>
 </body>
+
 </html>
