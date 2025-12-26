@@ -1,40 +1,46 @@
-const adminService = require("../services/admin.service.js");
+const adminService = require("../services/admin.service");
 
-// Renderiza la página de usuarios
-async function renderUsuarios(req, res) {
-    if (!req.session.user) return res.redirect("/auth/login");
-
-    const usuarios = await adminService.obtenerUsuarios(req.session.token);
-    res.render("admin/usuarios", { user: req.session.user, usuarios, error: null });
+// ================= USUARIOS =================
+async function getUsuarios(req, res) {
+    try {
+        const token = req.session.token;
+        const usuarios = await adminService.getUsuarios(token);
+        res.render("admin/usuarios", { usuarios, user: req.session.user });
+    } catch (error) {
+        console.error("Error getUsuarios:", error);
+        res.render("admin/usuarios", { usuarios: [], error: "No se pudieron cargar usuarios", user: req.session.user });
+    }
 }
 
-// Renderiza solicitudes
-async function renderSolicitudes(req, res) {
-    if (!req.session.user) return res.redirect("/auth/login");
-
-    const solicitudes = await adminService.obtenerSolicitudes(req.session.token);
-    res.render("admin/solicitudes", { user: req.session.user, solicitudes, error: null });
+// ================= SOLICITUDES =================
+async function getSolicitudes(req, res) {
+    try {
+        const token = req.session.token;
+        const solicitudes = await adminService.getSolicitudes(token);
+        res.render("admin/solicitudes", { solicitudes, user: req.session.user });
+    } catch (error) {
+        console.error("Error getSolicitudes:", error);
+        res.render("admin/solicitudes", { solicitudes: [], error: "No se pudieron cargar solicitudes", user: req.session.user });
+    }
 }
 
-// Renderiza decisiones
-async function renderDecisiones(req, res) {
-    if (!req.session.user) return res.redirect("/auth/login");
+// ================= ACTUALIZAR DECISIÓN =================
+async function updateDecision(req, res) {
+    try {
+        const token = req.session.token;
+        const { id } = req.params;
+        const { decision } = req.body;
 
-    const decisiones = await adminService.obtenerDecisiones(req.session.token);
-    res.render("admin/decisiones", { user: req.session.user, decisiones, error: null });
-}
-
-// Renderiza retroalimentación
-async function renderRetroalimentacion(req, res) {
-    if (!req.session.user) return res.redirect("/auth/login");
-
-    const retro = await adminService.obtenerRetroalimentacion(req.session.token);
-    res.render("admin/retroalimentacion", { user: req.session.user, retro, error: null });
+        await adminService.actualizarDecision(id, decision, token);
+        res.redirect("/admin/solicitudes");
+    } catch (error) {
+        console.error("Error updateDecision:", error);
+        res.redirect("/admin/solicitudes");
+    }
 }
 
 module.exports = {
-    renderUsuarios,
-    renderSolicitudes,
-    renderDecisiones,
-    renderRetroalimentacion
+    getUsuarios,
+    getSolicitudes,
+    updateDecision
 };
