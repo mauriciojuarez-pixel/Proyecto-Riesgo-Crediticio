@@ -1,6 +1,5 @@
 // frontend/src/controllers/auth.controller.js
-
-const authService = require("../services/auth.service.js");
+const authService = require("../services/auth.services.js"); // corregido a plural services
 
 const authController = {
   // Renderiza la página de registro
@@ -12,16 +11,31 @@ const authController = {
   register: async (req, res) => {
     try {
       const resultado = await authService.register(req.body);
-      // Enviar resultado completo a la vista
-      res.render("register", { error: null, resultado });
+
+      // Opcional: iniciar sesión automáticamente después del registro
+      req.session.user = {
+        id: resultado.user_id,
+        nombre: req.body.username,
+        rol: "cliente",
+        email: req.body.email
+      };
+
+      // Redirigir al dashboard directamente
+      res.redirect("/dashboard");
     } catch (err) {
       console.error("Error en register:", err);
-      res.render("register", { error: err.response?.data?.detail || err.message || "Error en el registro", resultado: null });
+      res.render("register", {
+        error: err.response?.data?.detail || err.message || "Error en el registro",
+        resultado: null
+      });
     }
   },
 
   // Renderiza la página de login
   renderLogin: (req, res) => {
+    if (req.session.user) {
+      return res.redirect("/dashboard"); // si ya está logueado, enviar al dashboard
+    }
     res.render("login", { error: null });
   },
 
@@ -30,14 +44,13 @@ const authController = {
     try {
       const userData = await authService.login(req.body);
 
-      // Validar que el backend haya devuelto user y token
       if (!userData || !userData.user || !userData.access_token) {
         throw new Error("Respuesta inválida del servidor. Intente nuevamente.");
       }
 
       // Guardar user completo en la sesión
       req.session.user = {
-        id: userData.user.user_id,     // <--- usar user_id del backend
+        id: userData.user.user_id,
         nombre: userData.user.username,
         rol: userData.user.rol,
         email: userData.user.email
@@ -48,11 +61,13 @@ const authController = {
       res.redirect("/dashboard");
     } catch (err) {
       console.error("Error en login:", err);
-      res.render("login", { error: err.response?.data?.detail || err.message || "Usuario o contraseña incorrecta" });
+      res.render("login", {
+        error: err.response?.data?.detail || err.message || "Usuario o contraseña incorrecta"
+      });
     }
   },
 
-  // Logout
+  // Cerrar sesión
   logout: (req, res) => {
     req.session.destroy(err => {
       if (err) console.error("Error destruyendo sesión:", err);

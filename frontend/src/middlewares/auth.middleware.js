@@ -2,6 +2,7 @@
 
 /**
  * Middleware para rutas protegidas: asegura que el usuario esté logueado
+ * Se usa en vistas como dashboard, risk, admin
  */
 function ensureAuth(req, res, next) {
     if (req.session && req.session.user) {
@@ -11,13 +12,14 @@ function ensureAuth(req, res, next) {
 }
 
 /**
- * Middleware opcional para APIs u otras rutas: asegura que haya un token
+ * Middleware opcional para APIs u otras rutas que necesitan sesión
+ * No se usa token en frontend; solo valida sesión
  */
-function ensureAuthenticated(req, res, next) {
-    if (req.session && req.session.token) {
+function ensureSession(req, res, next) {
+    if (req.session && req.session.user) {
         return next();
     }
-    res.redirect("/auth/login");
+    res.status(401).json({ error: "Usuario no autenticado. Inicie sesión." });
 }
 
 /**
@@ -31,7 +33,7 @@ function redirectIfAuthenticated(req, res, next) {
 }
 
 module.exports = {
-    ensureAuth,             // Para vistas protegidas (dashboard, risk, admin)
-    ensureAuthenticated,    // Para APIs que usan token
+    ensureAuth,           // Para vistas protegidas
+    ensureSession,        // Para APIs que devuelven JSON
     redirectIfAuthenticated // Para login/register
 };

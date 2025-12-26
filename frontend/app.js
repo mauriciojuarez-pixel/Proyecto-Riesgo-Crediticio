@@ -44,13 +44,17 @@ app.use("/risk", riskRoutes);
 app.use("/admin", adminRoutes);
 
 // -------------------- Rutas --------------------
+// -------------------- Rutas --------------------
 app.get("/", (req, res) => {
     res.redirect("/auth/login");
 });
 
+// Dashboard protegido
 app.get("/dashboard", ensureAuth, (req, res) => {
+    // Se pasa directamente el user desde la sesión
     res.render("dashboard", { user: req.session.user });
 });
+
 
 // -------------------- Manejo de errores --------------------
 const { errorHandler } = require("./src/middlewares/error.middleware.js");

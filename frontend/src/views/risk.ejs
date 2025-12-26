@@ -103,67 +103,25 @@
             <strong>Estabilidad laboral:</strong> del 1 al 10, donde 10 es muy estable.
         </p>
 
-        <form id="riskForm">
-            <input type="number" step="0.01" id="ingreso" placeholder="Ingreso mensual" required>
-            <input type="number" step="0.01" id="deuda_ratio" placeholder="Ratio de deuda (0-1)" required>
-            <input type="number" id="antiguedad" placeholder="Años en el empleo actual" required>
-            <input type="number" id="estabilidad_laboral" placeholder="Estabilidad laboral (1-10)" min="1" max="10" required>
+        <form id="riskForm" method="POST" action="/risk/predict">
+            <input type="number" step="0.01" name="ingreso" placeholder="Ingreso mensual" required>
+            <input type="number" step="0.01" name="deuda_ratio" placeholder="Ratio de deuda (0-1)" required>
+            <input type="number" name="antiguedad" placeholder="Años en el empleo actual" required>
+            <input type="number" name="estabilidad_laboral" placeholder="Estabilidad laboral (1-10)" min="1" max="10" required>
             <button type="submit">Evaluar Riesgo</button>
         </form>
 
-        <div id="riskResult"></div>
+        <div id="riskResult">
+            <% if (resultado) { %>
+                <p><strong>Probabilidad de Incumplimiento:</strong> <%= resultado.P_inc_ML %>%</p>
+                <p><strong>Riesgo Final (Lógica Difusa):</strong> <%= resultado.Riesgo_Final_LF %>%</p>
+                <p><strong>Recomendación:</strong> <%= resultado.Recomendacion %></p>
+            <% } else if (error) { %>
+                <p class="error"><%= error %></p>
+            <% } %>
+        </div>
 
         <a href="/dashboard">Volver al Dashboard</a>
     </div>  
-
-    <script>
-        // Tomar user desde localStorage
-        const user = JSON.parse(localStorage.getItem('user'));
-        const token = localStorage.getItem('access_token');
-        const backendURL = 'https://riesgo-backend-w5jn.onrender.com'; // Cambia a tu URL de backend en Render
-
-        document.getElementById('riskForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            if (!user || !user.user_id) {
-                document.getElementById('riskResult').innerHTML = '<p class="error">Usuario no identificado. Vuelve a iniciar sesión.</p>';
-                return;
-            }
-
-            const data = {
-                cliente_id: user.user_id,
-                ingreso: parseFloat(document.getElementById('ingreso').value),
-                deuda_ratio: parseFloat(document.getElementById('deuda_ratio').value),
-                antiguedad: parseInt(document.getElementById('antiguedad').value),
-                estabilidad_laboral: parseInt(document.getElementById('estabilidad_laboral').value)
-            };
-
-            try {
-                const response = await fetch(`${backendURL}/risk/predict`, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    document.getElementById('riskResult').innerHTML = `
-                        <p><strong>Probabilidad de Incumplimiento:</strong> ${result.P_inc_ML}%</p>
-                        <p><strong>Riesgo Final (Lógica Difusa):</strong> ${result.Riesgo_Final_LF}%</p>
-                        <p><strong>Recomendación:</strong> ${result.Recomendacion}</p>
-                    `;
-                } else {
-                    document.getElementById('riskResult').innerHTML = `<p class="error">${result.error}</p>`;
-                }
-            } catch (err) {
-                console.error(err);
-                document.getElementById('riskResult').innerHTML = `<p class="error">Error al comunicarse con el backend</p>`;
-            }
-        });
-    </script>
 </body>
 </html>

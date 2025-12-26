@@ -9,7 +9,8 @@ async function register(data) {
     try {
         const response = await axios.post(`${API_URL}/auth/register`, data, {
             headers: { "Content-Type": "application/json" },
-            timeout: 10000
+            timeout: 10000,
+            withCredentials: true // IMPORTANTE: para manejar cookies de sesión
         });
         return response.data;
     } catch (err) {
@@ -22,9 +23,10 @@ async function login(data) {
     try {
         const response = await axios.post(`${API_URL}/auth/login`, data, {
             headers: { "Content-Type": "application/json" },
-            timeout: 10000
+            timeout: 10000,
+            withCredentials: true // IMPORTANTE: permite que la sesión se guarde en cookies
         });
-        return response.data;
+        return response.data; // Puede ser { redirect: "/dashboard" } o un mensaje
     } catch (err) {
         console.error("Error en login:", err.response?.data || err.message);
         throw new Error(err.response?.data?.detail || "Usuario o contraseña incorrecta");
