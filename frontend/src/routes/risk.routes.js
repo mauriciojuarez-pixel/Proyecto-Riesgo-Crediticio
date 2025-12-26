@@ -1,12 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const riskController = require("../controllers/risk.controller.js");
-const { ensureAuthenticated } = require("../middlewares/auth.middleware.js");
+const riskController = require("../controllers/risk.controller");
+const authMiddleware = require("../middlewares/auth.middleware");
 
-// Página de evaluación de riesgo
-router.get("/", ensureAuthenticated, riskController.renderRisk);
-
-// Evaluación de riesgo (AJAX/POST)
-router.post("/predict", ensureAuthenticated, riskController.predictRisk);
+router.get("/dashboard", authMiddleware, riskController.renderDashboard);
+router.post("/risk/predict", authMiddleware, riskController.predictRisk);
 
 module.exports = router;
