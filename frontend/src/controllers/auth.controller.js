@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 
 // ---------- RENDER LOGIN ----------
 function renderLogin(req, res) {
-    res.render("login", { error: null, user: null });
+    res.render("auth/login", { error: null, user: null });
 }
 
 // ---------- LOGIN ----------
@@ -20,7 +20,7 @@ async function login(req, res) {
         const data = await response.json();
 
         if (!response.ok) {
-            return res.render("login", { error: data.detail || "Error al iniciar sesión", user: null });
+            return res.render("auth/login", { error: data.detail || "Error al iniciar sesión", user: null });
         }
 
         // Ajuste de cookies
@@ -38,13 +38,13 @@ async function login(req, res) {
 
     } catch (err) {
         console.error("Error login:", err);
-        return res.render("login", { error: "Error de conexión con el servidor", user: null });
+        return res.render("auth/login", { error: "Error de conexión con el servidor", user: null });
     }
 }
 
 // ---------- RENDER REGISTER ----------
 function renderRegister(req, res) {
-    res.render("register", { error: null, success: null, user: null });
+    res.render("auth/register", { error: null, success: null, user: null });
 }
 
 // ---------- REGISTER ----------
@@ -61,14 +61,14 @@ async function register(req, res) {
         const data = await response.json();
 
         if (!response.ok) {
-            return res.render("register", { error: data.detail || "Error al registrarse", success: null, user: null });
+            return res.render("auth/register", { error: data.detail || "Error al registrarse", success: null, user: null });
         }
 
-        return res.render("register", { error: null, success: "Registro exitoso, inicia sesión", user: null });
+        return res.render("auth/register", { error: null, success: "Registro exitoso, inicia sesión", user: null });
 
     } catch (err) {
         console.error("Error register:", err);
-        return res.render("register", { error: "Error de conexión con el servidor", success: null, user: null });
+        return res.render("auth/register", { error: "Error de conexión con el servidor", success: null, user: null });
     }
 }
 
