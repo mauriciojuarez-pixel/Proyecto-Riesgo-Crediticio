@@ -1,7 +1,4 @@
 <!-- frontend/src/views/risk.ejs -->
-
-<!-- frontend/src/views/risk.ejs -->
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -22,10 +19,6 @@
 
     <div class="container">
         <h1>Evaluación de Riesgo Crediticio</h1>
-
-        <% if (error) { %>
-            <div class="resultado error"><%= error %></div>
-        <% } %>
 
         <form id="riskForm">
             <input type="number" name="ingreso" placeholder="Ingreso mensual" step="0.01" required>
@@ -66,12 +59,16 @@
                     const data = await res.json();
 
                     if (!res.ok) {
-                        resultadoDiv.textContent = "Error: " + (data.error || "No se pudo evaluar");
+                        resultadoDiv.textContent = "Error: " + (data.error || data.detail || "No se pudo evaluar");
                         resultadoDiv.classList.add("error");
                         return;
                     }
 
-                    resultadoDiv.textContent = `Nivel de riesgo: ${data.riesgo || '-'} | Score: ${data.score || '-'}`;
+                    resultadoDiv.innerHTML = `
+                        <p><strong>Probabilidad de Incumplimiento:</strong> ${(data.P_inc_ML * 100).toFixed(2)}%</p>
+                        <p><strong>Nivel de Riesgo:</strong> ${data.Riesgo_Final_LF}</p>
+                        <p><strong>Recomendación:</strong> ${data.Recomendacion}</p>
+                    `;
                     resultadoDiv.classList.add("exito");
 
                 } catch (err) {

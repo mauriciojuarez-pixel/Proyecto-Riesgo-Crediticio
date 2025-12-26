@@ -5,6 +5,6 @@ const router = express.Router();
 const riskController = require("../controllers/risk.controller.js");
 
 router.get("/risk", riskController.renderRisk);
-router.post("/risk/predict", riskController.predictRisk);
+router.post("/risk/predict", riskController.predictRisk); // ruta del frontend
 
 module.exports = router;
