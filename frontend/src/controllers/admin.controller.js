@@ -6,10 +6,7 @@ const adminService = require("../services/admin.service.js");
  */
 async function renderDashboard(req, res) {
     if (!req.session?.user) return res.redirect("/auth/login");
-
-    res.render("admin/dashboard", {
-        user: req.session.user
-    });
+    res.render("admin/dashboard", { user: req.session.user });
 }
 
 /**
@@ -72,16 +69,7 @@ async function retroalimentacion(req, res) {
     }
 }
 
-// Depuración: asegurarse que todas las funciones estén definidas
-console.log("Controladores admin cargados:", {
-    renderDashboard,
-    usuarios,
-    solicitudes,
-    decisiones,
-    retroalimentacion
-});
-
-// Exportamos funciones individualmente para que router siempre reciba funciones válidas
+// Exportamos controladores individuales
 module.exports = {
     renderDashboard,
     usuarios,

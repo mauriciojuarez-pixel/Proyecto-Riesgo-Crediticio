@@ -1,27 +1,32 @@
 // frontend/src/routes/admin.routes.js
 const express = require("express");
 const router = express.Router();
-
-// Importamos controladores
 const adminController = require("../controllers/admin.controller.js");
+const { ensureAuth } = require("../middlewares/auth.middleware.js");
 
-// Middleware de autenticación
-const { ensureAuthenticated } = require("../middlewares/auth.middleware.js");
+// -------------------- Rutas Admin --------------------
 
-// Verificación de controladores para evitar errores de tipo
+// Dashboard principal
+router.get("/", ensureAuth, adminController.renderDashboard);
+
+// Lista de usuarios
+router.get("/usuarios", ensureAuth, adminController.usuarios);
+
+// Lista de solicitudes
+router.get("/solicitudes", ensureAuth, adminController.solicitudes);
+
+// Decisiones tomadas
+router.get("/decisiones", ensureAuth, adminController.decisiones);
+
+// Retroalimentación recibida
+router.get("/retroalimentacion", ensureAuth, adminController.retroalimentacion);
+
+// -------------------- Validación de funciones --------------------
 for (const [key, fn] of Object.entries(adminController)) {
     if (typeof fn !== "function") {
         console.error(`Error: adminController.${key} no es una función válida`);
-        process.exit(1); // Detener si algún controlador está mal definido
+        process.exit(1);
     }
 }
 
-// Rutas del panel de administración
-router.get("/", ensureAuthenticated, adminController.renderDashboard);
-router.get("/usuarios", ensureAuthenticated, adminController.usuarios);
-router.get("/solicitudes", ensureAuthenticated, adminController.solicitudes);
-router.get("/decisiones", ensureAuthenticated, adminController.decisiones);
-router.get("/retroalimentacion", ensureAuthenticated, adminController.retroalimentacion);
-
-// Exportamos el router
 module.exports = router;
