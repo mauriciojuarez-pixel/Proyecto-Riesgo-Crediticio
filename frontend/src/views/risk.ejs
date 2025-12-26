@@ -5,121 +5,21 @@
     <title>Evaluación de Riesgo - Riesgo Crediticio</title>
     <link rel="stylesheet" href="/css/styles.css">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            background: #eef2f7;
-            color: #333;
-        }
-
-        nav {
-            background-color: #4f46e5;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #fff;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        nav span {
-            font-weight: 600;
-            font-size: 16px;
-        }
-
-        nav a {
-            color: #fff;
-            text-decoration: none;
-            margin-left: 20px;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-
-        nav a:hover {
-            color: #ffeb3b;
-        }
-
-        .container {
-            max-width: 500px;
-            margin: 50px auto;
-            background: #fff;
-            padding: 40px 30px;
-            border-radius: 15px;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.08);
-            transition: transform 0.3s;
-        }
-
-        .container:hover {
-            transform: translateY(-3px);
-        }
-
-        h1 {
-            font-size: 26px;
-            margin-bottom: 10px;
-            color: #333;
-            text-align: center;
-        }
-
-        .info {
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 20px;
-            text-align: center;
-            line-height: 1.5;
-        }
-
-        form input {
-            width: 100%;
-            padding: 12px 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-            transition: border 0.3s;
-        }
-
-        form input:focus {
-            border-color: #4f46e5;
-            outline: none;
-        }
-
-        form button {
-            width: 100%;
-            padding: 12px;
-            background: #4f46e5;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: background 0.3s;
-        }
-
-        form button:hover {
-            background: #4338ca;
-        }
-
-        .resultado {
-            margin-top: 25px;
-            padding: 15px;
-            border-radius: 10px;
-            background: #e0e7ff;
-            text-align: center;
-            font-weight: 600;
-            color: #1e3a8a;
-            min-height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .error {
-            color: #b91c1c;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: 500;
-        }
+        body { font-family: 'Inter', sans-serif; margin:0; background:#eef2f7; color:#333; }
+        nav { background-color:#4f46e5; padding:15px 30px; display:flex; justify-content:space-between; align-items:center; color:#fff; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+        nav span { font-weight:600; font-size:16px;}
+        nav a { color:#fff; text-decoration:none; margin-left:20px; font-weight:500; transition:all 0.3s;}
+        nav a:hover { color:#ffeb3b;}
+        .container { max-width:500px; margin:50px auto; background:#fff; padding:40px 30px; border-radius:15px; box-shadow:0 12px 25px rgba(0,0,0,0.08); transition: transform 0.3s;}
+        .container:hover { transform: translateY(-3px);}
+        h1 { font-size:26px; margin-bottom:10px; color:#333; text-align:center;}
+        .info { font-size:14px; color:#555; margin-bottom:20px; text-align:center; line-height:1.5;}
+        form input { width:100%; padding:12px 15px; margin-bottom:15px; border-radius:8px; border:1px solid #ccc; font-size:14px; transition:border 0.3s;}
+        form input:focus { border-color:#4f46e5; outline:none;}
+        form button { width:100%; padding:12px; background:#4f46e5; color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:16px; font-weight:600; transition:background 0.3s;}
+        form button:hover { background:#4338ca;}
+        .resultado { margin-top:25px; padding:15px; border-radius:10px; background:#e0e7ff; text-align:center; font-weight:600; color:#1e3a8a; min-height:40px; display:flex; align-items:center; justify-content:center;}
+        .error { color:#b91c1c; margin-bottom:15px; text-align:center; font-weight:500;}
     </style>
 </head>
 <body>
@@ -128,24 +28,20 @@
             <span>Bienvenido, <%= user.username %></span>
             <div>
                 <a href="/dashboard">Dashboard</a>
-                <a href="/views/login">Cerrar Sesión</a>
+                <a href="/auth/logout">Cerrar Sesión</a>
             </div>
         <% } else { %>
             <span>Bienvenido, Invitado</span>
-            <a href="/views/login">Iniciar Sesión</a>
+            <a href="/auth/login">Iniciar Sesión</a>
         <% } %>
     </nav>
 
     <div class="container">
         <h1>Evaluación de Riesgo Crediticio</h1>
 
-        <p class="hint">
-            Complete los campos a continuación.  
-            <strong>Ingreso mensual:</strong> monto total que percibe al mes.<br>
-            <strong>Ratio de deuda:</strong> proporción de deuda actual sobre ingreso (ej. 0.2 = 20%).<br>
-            <strong>Años en el empleo actual:</strong> tiempo que lleva en su trabajo actual.<br>
-            <strong>Estabilidad laboral:</strong> del 1 al 10, donde 10 es muy estable.
-        </p>
+        <div class="info">
+            Llena todos los campos con los datos solicitados y presiona <strong>Evaluar Riesgo</strong> para obtener el resultado.
+        </div>
 
         <% if (error) { %>
             <div class="error"><%= error %></div>
@@ -153,7 +49,7 @@
 
         <form id="riskForm">
             <input type="number" name="ingreso" placeholder="Ingreso mensual (ej. 2000)" required>
-            <input type="number" name="deuda_ratio" placeholder="Ratio de deuda (ej. 30)" required>
+            <input type="number" name="deuda_ratio" placeholder="Ratio de deuda (ej. 30)" step="0.01" required>
             <input type="number" name="antiguedad" placeholder="Años de antigüedad laboral (ej. 5)" required>
             <input type="number" name="estabilidad_laboral" placeholder="Estabilidad laboral (1-5)" required>
             <button type="submit">Evaluar Riesgo</button>
@@ -174,9 +70,15 @@
             const datos = Object.fromEntries(formData.entries());
 
             try {
-                const res = await fetch("/risk/predict", {
+                // URL de backend directo
+                const BACKEND_URL = "https://riesgo-backend-w5jn.onrender.com";
+
+                const res = await fetch(`${BACKEND_URL}/risk/predict_risk`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer <%= user ? user.token : '' %>"
+                    },
                     body: JSON.stringify(datos)
                 });
 
@@ -187,6 +89,7 @@
                     resultadoDiv.textContent = `Error: ${data.error || "No se pudo evaluar"}`;
                 }
             } catch (err) {
+                console.error(err);
                 resultadoDiv.textContent = "Error de conexión con el servidor";
             }
         });
