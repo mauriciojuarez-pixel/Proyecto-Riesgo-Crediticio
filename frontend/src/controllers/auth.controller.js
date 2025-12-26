@@ -1,6 +1,12 @@
+// src/controllers/auth.controller.js
 const fetch = require("node-fetch");
 
-// -------------------- LOGIN --------------------
+// ---------- RENDER LOGIN ----------
+function renderLogin(req, res) {
+    res.render("login", { error: null, user: null });
+}
+
+// ---------- LOGIN ----------
 async function login(req, res) {
     const { email, password } = req.body;
 
@@ -17,19 +23,23 @@ async function login(req, res) {
             return res.render("login", { error: data.detail || "Error al iniciar sesión", user: null });
         }
 
-        // Guardar usuario y token en sesión
         req.session.user = data.user;
         req.session.token = data.access_token;
 
-        res.redirect("/dashboard");
+        return res.redirect("/dashboard");
 
     } catch (err) {
         console.error("Error login:", err);
-        res.render("login", { error: "Error de conexión con el servidor", user: null });
+        return res.render("login", { error: "Error de conexión con el servidor", user: null });
     }
 }
 
-// -------------------- REGISTER --------------------
+// ---------- RENDER REGISTER ----------
+function renderRegister(req, res) {
+    res.render("register", { error: null, success: null, user: null });
+}
+
+// ---------- REGISTER ----------
 async function register(req, res) {
     const { username, email, password } = req.body;
 
@@ -46,15 +56,15 @@ async function register(req, res) {
             return res.render("register", { error: data.detail || "Error al registrarse", success: null, user: null });
         }
 
-        res.render("register", { error: null, success: "Registro exitoso, inicia sesión", user: null });
+        return res.render("register", { error: null, success: "Registro exitoso, inicia sesión", user: null });
 
     } catch (err) {
         console.error("Error register:", err);
-        res.render("register", { error: "Error de conexión con el servidor", success: null, user: null });
+        return res.render("register", { error: "Error de conexión con el servidor", success: null, user: null });
     }
 }
 
-// -------------------- LOGOUT --------------------
+// ---------- LOGOUT ----------
 function logout(req, res) {
     req.session.destroy(err => {
         if (err) {
@@ -66,4 +76,10 @@ function logout(req, res) {
     });
 }
 
-module.exports = { login, register, logout };
+module.exports = {
+    renderLogin,
+    renderRegister,
+    login,
+    register,
+    logout
+};
