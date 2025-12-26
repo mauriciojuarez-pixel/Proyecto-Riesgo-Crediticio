@@ -7,6 +7,8 @@ const axios = require("axios");
 const API_URL = process.env.API_URL || "http://localhost:8000";
 
 async function evaluarRiesgo(datos, token) {
+    if (!token) throw new Error("Token no encontrado en sesión");
+
     try {
         const res = await axios.post(`${API_URL}/risk/predict_risk`, datos, {
             headers: {
@@ -20,7 +22,7 @@ async function evaluarRiesgo(datos, token) {
 
     } catch (err) {
         console.error("Error al evaluar riesgo:", err.response?.data || err.message);
-        throw new Error("No se pudo evaluar el riesgo crediticio");
+        throw new Error(err.response?.data?.detail || "No se pudo evaluar el riesgo crediticio");
     }
 }
 

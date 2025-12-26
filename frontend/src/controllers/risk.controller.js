@@ -1,6 +1,6 @@
-const fetch = require("node-fetch");
+// frontend/src/controllers/risk.controller.js
 
-const API_URL = process.env.API_URL || "http://localhost:8000";
+const riskService = require("../services/risk.services");
 
 const riskController = {
 
@@ -32,25 +32,10 @@ const riskController = {
                 estabilidad_laboral: Number(req.body.estabilidad_laboral)
             };
 
-            const response = await fetch(`${API_URL}/risk/predict_risk`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${req.session.token}`
-                },
-                body: JSON.stringify(data),
-            });
+            // Usar el servicio con el token de la sesión
+            const resultado = await riskService.evaluarRiesgo(data, req.session.token);
 
-            const result = await response.json();
-
-            if (!response.ok) {
-                console.error("Backend error:", result);
-                return res.status(response.status).json({
-                    error: result.detail || "Error procesando la evaluación de riesgo"
-                });
-            }
-
-            res.json(result);
+            res.json(resultado);
 
         } catch (error) {
             console.error("Error en predictRisk:", error);
