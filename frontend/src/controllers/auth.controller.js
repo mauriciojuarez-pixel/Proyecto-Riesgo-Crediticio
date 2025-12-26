@@ -66,20 +66,23 @@ async function register(req, res) {
             body: JSON.stringify({ username, email, password })
         });
 
-        const data = await response.json();
-
-        if (!response.ok) {
-            let msg = "Error al registrarse";
-            try {
-                const errData = await response.json();
-                if (errData.detail) msg = errData.detail;
-                else if (errData.errors) msg = errData.errors.map(e => e.msg).join(", ");
-            } catch (e) {
-                console.error("Error parseando response:", e);
-            }
-            return res.render("auth/register", { error: msg, user: null });
+        let data;
+        try {
+            data = await response.json(); // parsear solo UNA vez
+        } catch (e) {
+            console.error("Error parseando JSON de backend:", e);
+            data = {}; // fallback
         }
 
+        if (!response.ok) {
+            // manejar error de forma segura
+            let msg = "Error al registrarse";
+            if (data.detail) msg = data.detail;
+            else if (data.errors) msg = data.errors.map(e => e.msg).join(", ");
+            return res.render("auth/register", { error: msg, success: null, user: null });
+        }
+
+        // Si todo salió bien
         return res.render("auth/register", { error: null, success: "Registro exitoso, inicia sesión", user: null });
 
     } catch (err) {
@@ -87,6 +90,7 @@ async function register(req, res) {
         return res.render("auth/register", { error: "Error de conexión con el servidor", success: null, user: null });
     }
 }
+
 
 // ---------- LOGOUT ----------
 function logout(req, res) {

@@ -1,4 +1,4 @@
-<!-- frontend/src/views/login.ejs -->
+<!-- frontend/src/views/auth/login.ejs -->
 
 <!DOCTYPE html>
 <html lang="es">
@@ -11,8 +11,13 @@
     <div class="container">
         <h1>Iniciar Sesión</h1>
 
-        <% if (error) { %>
-            <div class="alert alert-danger"><%= error %></div>
+        <% 
+            // Aseguramos que la variable 'error' exista
+            const errorMsg = typeof error !== 'undefined' ? error : null;
+        %>
+
+        <% if (errorMsg) { %>
+            <div class="alert alert-danger"><%= errorMsg %></div>
         <% } %>
 
         <form action="/auth/login" method="POST">
