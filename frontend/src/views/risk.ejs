@@ -117,18 +117,21 @@
     </div>  
 
     <script>
-        const userId = "<%= user?.id || '' %>"; // proteger contra undefined
+        // Tomar user desde localStorage
+        const user = JSON.parse(localStorage.getItem('user'));
+        const token = localStorage.getItem('access_token');
+        const backendURL = 'https://riesgo-backend-w5jn.onrender.com'; // Cambia a tu URL de backend en Render
 
         document.getElementById('riskForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            if (!userId) {
+            if (!user || !user.user_id) {
                 document.getElementById('riskResult').innerHTML = '<p class="error">Usuario no identificado. Vuelve a iniciar sesión.</p>';
                 return;
             }
 
             const data = {
-                cliente_id: userId,
+                cliente_id: user.user_id,
                 ingreso: parseFloat(document.getElementById('ingreso').value),
                 deuda_ratio: parseFloat(document.getElementById('deuda_ratio').value),
                 antiguedad: parseInt(document.getElementById('antiguedad').value),
@@ -136,9 +139,12 @@
             };
 
             try {
-                const response = await fetch('/risk/predict', {
+                const response = await fetch(`${backendURL}/risk/predict`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                     body: JSON.stringify(data)
                 });
 

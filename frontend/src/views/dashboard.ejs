@@ -97,19 +97,10 @@
 </head>
 <body>
     <nav>
-        <% if (user) { %>
-            <span>Bienvenido, <%= user.nombre %></span>
-            <div>
-                <a href="/risk">Evaluar Riesgo</a>
-                <% if (user.rol === 'admin') { %>
-                    <a href="/admin/usuarios">Administración</a>
-                <% } %>
-                <a href="/auth/login">Cerrar Sesión</a>
-            </div>
-        <% } else { %>
-            <span>Bienvenido, Invitado</span>
+        <span id="user-welcome">Bienvenido, Invitado</span>
+        <div id="nav-links">
             <a href="/auth/login">Iniciar Sesión</a>
-        <% } %>
+        </div>
     </nav>
 
     <div class="container">
@@ -121,15 +112,42 @@
                 <h2>Evaluar Riesgo</h2>
                 <p>Ingresa los datos del solicitante y obtén un análisis rápido sobre su perfil crediticio.</p>
             </div>
-            <% if (user && user.rol === 'admin') { %>
-                <div class="card">
-                    <h2>Administración</h2>
-                    <p>Gestiona usuarios, roles y configura los parámetros del sistema de evaluación.</p>
-                </div>
-            <% } %>
+            <div class="card" id="admin-card" style="display:none;">
+                <h2>Administración</h2>
+                <p>Gestiona usuarios, roles y configura los parámetros del sistema de evaluación.</p>
+            </div>
         </div>
     </div>
 
-    <script src="/js/main.js"></script>
+    <script>
+        // Obtener usuario desde localStorage
+        const user = JSON.parse(localStorage.getItem('user'));
+        const welcome = document.getElementById('user-welcome');
+        const navLinks = document.getElementById('nav-links');
+        const adminCard = document.getElementById('admin-card');
+
+        if (user) {
+            welcome.textContent = `Bienvenido, ${user.username}`;
+
+            // Cambiar links de navegación
+            navLinks.innerHTML = `
+                <a href="/risk">Evaluar Riesgo</a>
+                ${user.rol === 'admin' ? '<a href="/admin/usuarios">Administración</a>' : ''}
+                <a href="#" id="logout">Cerrar Sesión</a>
+            `;
+
+            // Mostrar card de admin si corresponde
+            if (user.rol === 'admin') {
+                adminCard.style.display = 'block';
+            }
+
+            // Logout
+            document.getElementById('logout').addEventListener('click', () => {
+                localStorage.removeItem('user');
+                localStorage.removeItem('access_token');
+                window.location.href = '/auth/login';
+            });
+        }
+    </script>
 </body>
 </html>
