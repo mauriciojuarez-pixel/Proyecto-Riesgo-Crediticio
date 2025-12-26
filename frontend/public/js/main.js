@@ -1,22 +1,48 @@
-const express = require("express");
-const path = require("path");
-const cookieParser = require("cookie-parser");
-require("dotenv").config();
+// frontemd/public/js/main.js
 
-const app = express();
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("riskForm");
+    if (!form) return;
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cookieParser()); // necesario para leer cookies
+    const resultadoDiv = document.getElementById("resultado");
 
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "src/views"));
-app.use(express.static(path.join(__dirname, "public")));
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        resultadoDiv.textContent = "Evaluando riesgo...";
 
-// Rutas
-app.use("/auth", require("./src/routes/auth.routes"));
-app.use("/", require("./src/routes/risk.routes"));
+        const formData = new FormData(form);
+        const datos = Object.fromEntries(formData.entries());
 
-// Puerto
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Frontend corriendo en puerto", PORT));
+        // Convertir a números (importante para el backend ML)
+        datos.ingreso = parseFloat(datos.ingreso);
+        datos.deuda_ratio = parseFloat(datos.deuda_ratio);
+        datos.antiguedad = parseInt(datos.antiguedad);
+        datos.estabilidad_laboral = parseInt(datos.estabilidad_laboral);
+
+        try {
+            const res = await fetch("/risk/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(datos)
+            });
+
+            const data = await res.json();
+            console.log("Respuesta backend:", data);
+
+
+            if (!res.ok) {
+                resultadoDiv.textContent = "Error: " + (data.error || "No se pudo evaluar");
+                return;
+            }
+
+            resultadoDiv.textContent = `Nivel de riesgo: ${data.riesgo}`;
+
+        } catch (err) {
+            console.error("Error frontend:", err);
+            resultadoDiv.textContent = "Error de conexión con el servidor";
+        }
+    });
+});
+    

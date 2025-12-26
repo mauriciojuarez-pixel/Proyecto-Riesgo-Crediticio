@@ -19,9 +19,17 @@ async function login(req, res) {
 
         const data = await response.json();
 
-        if (!response.ok) {
-            return res.render("auth/login", { error: data.detail || "Error al iniciar sesión", user: null });
+    if (!response.ok) {
+        let msg = "Error al iniciar sesión";
+        try {
+            const errData = await response.json();
+            if (errData.detail) msg = errData.detail;
+            else if (errData.errors) msg = errData.errors.map(e => e.msg).join(", ");
+        } catch (e) {
+            console.error("Error parseando response:", e);
         }
+        return res.render("auth/login", { error: msg, user: null });
+    }
 
         // Ajuste de cookies
         const cookieOptions = {
@@ -61,7 +69,15 @@ async function register(req, res) {
         const data = await response.json();
 
         if (!response.ok) {
-            return res.render("auth/register", { error: data.detail || "Error al registrarse", success: null, user: null });
+            let msg = "Error al registrarse";
+            try {
+                const errData = await response.json();
+                if (errData.detail) msg = errData.detail;
+                else if (errData.errors) msg = errData.errors.map(e => e.msg).join(", ");
+            } catch (e) {
+                console.error("Error parseando response:", e);
+            }
+            return res.render("auth/register", { error: msg, user: null });
         }
 
         return res.render("auth/register", { error: null, success: "Registro exitoso, inicia sesión", user: null });
