@@ -1,0 +1,163 @@
+<!-- frontend/src/views/risk.ejs -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Evaluación de Riesgo - Sistema de Riesgo Crediticio</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .risk-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="number"]:focus {
+            border-color: #2980b9;
+            outline: none;
+            box-shadow: 0 0 5px rgba(41, 128, 185, 0.3);
+        }
+
+        button {
+            padding: 12px;
+            font-size: 16px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #1c5980;
+        }
+
+        #riskResult {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-radius: 8px;
+        }
+
+        .error {
+            color: #c0392b;
+            font-weight: bold;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            color: #2980b9;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .hint {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="risk-container">
+        <h1>Evaluación de Riesgo Crediticio</h1>
+        <p class="hint">
+            Complete los campos a continuación.  
+            <strong>Ingreso mensual:</strong> monto total que percibe al mes.<br>
+            <strong>Ratio de deuda:</strong> proporción de deuda actual sobre ingreso (ej. 0.2 = 20%).<br>
+            <strong>Años en el empleo actual:</strong> tiempo que lleva en su trabajo actual.<br>
+            <strong>Estabilidad laboral:</strong> del 1 al 10, donde 10 es muy estable.
+        </p>
+
+        <form id="riskForm">
+            <input type="number" step="0.01" id="ingreso" placeholder="Ingreso mensual" required>
+            <input type="number" step="0.01" id="deuda_ratio" placeholder="Ratio de deuda (0-1)" required>
+            <input type="number" id="antiguedad" placeholder="Años en el empleo actual" required>
+            <input type="number" id="estabilidad_laboral" placeholder="Estabilidad laboral (1-10)" min="1" max="10" required>
+            <button type="submit">Evaluar Riesgo</button>
+        </form>
+
+        <div id="riskResult"></div>
+
+        <a href="/dashboard">Volver al Dashboard</a>
+    </div>  
+
+    <script>
+        const userId = "<%= user?.id || '' %>"; // proteger contra undefined
+
+        document.getElementById('riskForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!userId) {
+                document.getElementById('riskResult').innerHTML = '<p class="error">Usuario no identificado. Vuelve a iniciar sesión.</p>';
+                return;
+            }
+
+            const data = {
+                cliente_id: userId,
+                ingreso: parseFloat(document.getElementById('ingreso').value),
+                deuda_ratio: parseFloat(document.getElementById('deuda_ratio').value),
+                antiguedad: parseInt(document.getElementById('antiguedad').value),
+                estabilidad_laboral: parseInt(document.getElementById('estabilidad_laboral').value)
+            };
+
+            try {
+                const response = await fetch('/risk/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('riskResult').innerHTML = `
+                        <p><strong>Probabilidad de Incumplimiento:</strong> ${result.P_inc_ML}%</p>
+                        <p><strong>Riesgo Final (Lógica Difusa):</strong> ${result.Riesgo_Final_LF}%</p>
+                        <p><strong>Recomendación:</strong> ${result.Recomendacion}</p>
+                    `;
+                } else {
+                    document.getElementById('riskResult').innerHTML = `<p class="error">${result.error}</p>`;
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('riskResult').innerHTML = `<p class="error">Error al comunicarse con el backend</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

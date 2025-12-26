@@ -3,18 +3,133 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Sistema de Riesgo Crediticio</title>
+    <title>Dashboard - Riesgo Crediticio</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background: #f4f7fa;
+            color: #333;
+        }
+
+        nav {
+            background-color: #667eea;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        nav span {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #ffeb3b;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        p {
+            font-size: 16px;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        .cards {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background-color: #f0f4ff;
+            border-radius: 12px;
+            padding: 20px 30px;
+            width: 250px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .card h2 {
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .card p {
+            color: #555;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Dashboard</h1>
-        <p>Bienvenido, <%= username %>!</p>
+    <nav>
+        <% if (user) { %>
+            <span>Bienvenido, <%= user.nombre %></span>
+            <div>
+                <a href="/risk">Evaluar Riesgo</a>
+                <% if (user.rol === 'admin') { %>
+                    <a href="/admin/usuarios">Administración</a>
+                <% } %>
+                <a href="/auth/login">Cerrar Sesión</a>
+            </div>
+        <% } else { %>
+            <span>Bienvenido, Invitado</span>
+            <a href="/auth/login">Iniciar Sesión</a>
+        <% } %>
+    </nav>
 
-        <a href="/risk/form">Nueva Solicitud de Riesgo</a>
-        <a href="/logout">Cerrar Sesión</a>
+    <div class="container">
+        <h1>Bienvenido al Sistema Inteligente de Riesgo Crediticio</h1>
+        <p>Este sistema permite evaluar de manera automática y confiable el nivel de riesgo crediticio de los usuarios, facilitando la toma de decisiones basada en datos y análisis predictivo.</p>
+
+        <div class="cards">
+            <div class="card">
+                <h2>Evaluar Riesgo</h2>
+                <p>Ingresa los datos del solicitante y obtén un análisis rápido sobre su perfil crediticio.</p>
+            </div>
+            <% if (user && user.rol === 'admin') { %>
+                <div class="card">
+                    <h2>Administración</h2>
+                    <p>Gestiona usuarios, roles y configura los parámetros del sistema de evaluación.</p>
+                </div>
+            <% } %>
+        </div>
     </div>
-    <script src="/js/app.js"></script>
+
+    <script src="/js/main.js"></script>
 </body>
 </html>

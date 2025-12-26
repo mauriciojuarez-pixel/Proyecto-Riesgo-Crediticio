@@ -3,23 +3,115 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Login - Sistema de Riesgo Crediticio</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <title>Login - Riesgo Crediticio</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 350px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #667eea;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #5a67d8;
+        }
+
+        .error {
+            background-color: #ffe0e0;
+            color: #ff0000;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        p {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Iniciar Sesión</h2>
-        <form id="loginForm">
-            <input type="email" id="email" placeholder="Correo" required>
-            <input type="password" id="password" placeholder="Contraseña" required>
-            <button type="submit">Login</button>
+    <div class="container">
+        <h1>Iniciar Sesión</h1>
+        <% if (error) { %>
+            <div class="error"><%= error %></div>
+        <% } %>
+        <form action="/auth/login" method="POST">
+            <label>Email:</label>
+            <input type="email" name="email" placeholder="tu@email.com" required>
+            
+            <label>Contraseña:</label>
+            <input type="password" name="password" placeholder="********" required>
+            
+            <button type="submit">Ingresar</button>
         </form>
-
-        <button id="goRegister">No tengo cuenta. Registrarme</button>
-
-        <div id="message"></div>
+        <p>¿No tienes cuenta? <a href="/auth/register">Regístrate</a></p>
     </div>
-
-    <script src="/js/app.js"></script>
 </body>
 </html>

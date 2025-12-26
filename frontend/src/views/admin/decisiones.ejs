@@ -1,0 +1,45 @@
+<!-- frontend/src/views/admin/decisiones.ejs -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Decisiones - Administración</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/auth/logout">Cerrar Sesión</a>
+    </nav>
+    <div class="container">
+        <h1>Decisiones de Riesgo</h1>
+        <% if (error) { %>
+            <div class="error"><%= error %></div>
+        <% } %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Solicitud ID</th>
+                    <th>Probabilidad Incumplimiento ML</th>
+                    <th>Riesgo Final LF</th>
+                    <th>Recomendación</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% decisiones.forEach(function(d){ %>
+                    <tr>
+                        <td><%= d.solicitud_id %></td>
+                        <td><%= d.P_inc_ML %>%</td>
+                        <td><%= d.Riesgo_Final_LF %></td>
+                        <td><%= d.Recomendacion %></td>
+                        <td><%= d.created_at %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+    <script src="/js/main.js"></script>
+
+</body>
+</html>

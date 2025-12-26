@@ -1,0 +1,45 @@
+<!-- frontend/src/views/admin/usuarios.ejs -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios - Administración</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/auth/logout">Cerrar Sesión</a>
+    </nav>
+    <div class="container">
+        <h1>Lista de Usuarios</h1>
+        <% if (error) { %>
+            <div class="error"><%= error %></div>
+        <% } %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Creado</th>
+                    <th>Último login</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% usuarios.forEach(function(u){ %>
+                    <tr>
+                        <td><%= u.username %></td>
+                        <td><%= u.email %></td>
+                        <td><%= u.rol %></td>
+                        <td><%= u.created_at %></td>
+                        <td><%= u.ultimo_login || "Nunca" %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+    <script src="/js/main.js"></script>
+
+</body>
+</html>

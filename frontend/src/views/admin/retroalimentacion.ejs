@@ -1,0 +1,43 @@
+<!-- frontend/src/views/admin/retroalimentacion.ejs -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Retroalimentación - Administración</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/auth/logout">Cerrar Sesión</a>
+    </nav>
+    <div class="container">
+        <h1>Comentarios y Retroalimentación</h1>
+        <% if (error) { %>
+            <div class="error"><%= error %></div>
+        <% } %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Usuario ID</th>
+                    <th>Decision ID</th>
+                    <th>Comentario</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% feedback.forEach(function(f){ %>
+                    <tr>
+                        <td><%= f.usuario_id %></td>
+                        <td><%= f.decision_id %></td>
+                        <td><%= f.comentario %></td>
+                        <td><%= f.fecha %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+    <script src="/js/main.js"></script>
+
+</body>
+</html>

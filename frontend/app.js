@@ -1,43 +1,58 @@
 // frontend/app.js
-// Archivo principal del frontend en Node.js + Express
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
-require('dotenv').config();
+const express = require("express");
+const path = require("path");
+const session = require("express-session");
+require("dotenv").config();
 
-// -------------------- Importar rutas --------------------
-// frontend/src/routes/auth.routes.js
-const { router: authRoutes } = require('./src/routes/auth.routes'); 
-// frontend/src/routes/risk.routes.js
-const riskRoutes = require('./src/routes/risk.routes'); 
+// -------------------- Middlewares --------------------
+const { ensureAuth } = require("./src/middlewares/auth.middleware");
+
+// -------------------- Routers --------------------
+const authRoutes = require("./src/routes/auth.routes");
+const riskRoutes = require("./src/routes/risk.routes");
+const adminRoutes = require("./src/routes/admin.routes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// -------------------- Configuración de vistas --------------------
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'src/views'));
+// -------------------- Middlewares globales --------------------
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "public")));
 
-// -------------------- Archivos estáticos --------------------
-// frontend/src/public/
-app.use(express.static(path.join(__dirname, 'src/public')));
+// EJS
+app.set("views", path.join(__dirname, "src/views"));
+app.set("view engine", "ejs");
 
-// -------------------- Middleware --------------------
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// Sessions (manejo de login)
+app.use(session({
+    secret: process.env.SESSION_SECRET || "secret123",
+    resave: false,
+    saveUninitialized: true,
+}));
 
-// -------------------- Rutas --------------------
-app.use('/', authRoutes);     // Login, register, dashboard
-app.use('/risk', riskRoutes); // Predicción de riesgo
+// -------------------- Routers --------------------
+app.use("/auth", authRoutes);
+app.use("/risk", riskRoutes);
+app.use("/admin", adminRoutes);
 
-// -------------------- Ruta raíz --------------------
-app.get('/', (req, res) => res.redirect('/')); // Redirige al login (login está en '/')
-
-// -------------------- Manejo de rutas no encontradas --------------------
-app.use((req, res) => {
-    res.status(404).render('404', { url: req.originalUrl });
+// -------------------- Rutas principales --------------------
+app.get("/", (req, res) => {
+    res.redirect("/auth/login");
 });
 
+// Dashboard protegido
+app.get("/dashboard", ensureAuth, (req, res) => {
+    // Pasar la información del usuario a la vista
+    res.render("dashboard", { user: req.session.user });
+});
+
+// -------------------- Middleware de errores --------------------
+const { errorHandler } = require("./src/middlewares/error.middleware");
+app.use(errorHandler);
+
 // -------------------- Iniciar servidor --------------------
-app.listen(PORT, () => console.log(`Frontend corriendo en http://localhost:${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Frontend corriendo en http://localhost:${PORT}`);
+});

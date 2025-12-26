@@ -1,15 +1,14 @@
-fastapi
-uvicorn
-pymongo
-python-jose
-passlib[bcrypt]
-pydantic
+fastapi==0.111.1
+uvicorn==0.24.0
+pandas
+numpy
 scikit-learn
 scikit-fuzzy
-numpy
-pandas
 joblib
 python-multipart
+pymongo
+python-dotenv
+
 
 
 # pip install -r requirements.txt

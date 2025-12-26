@@ -1,0 +1,49 @@
+<!-- frontend/src/views/admin/solicitudes.ejs -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Solicitudes - Administración</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/auth/logout">Cerrar Sesión</a>
+    </nav>
+    <div class="container">
+        <h1>Solicitudes de Crédito</h1>
+        <% if (error) { %>
+            <div class="error"><%= error %></div>
+        <% } %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Usuario ID</th>
+                    <th>Monto Solicitado</th>
+                    <th>Plazo (meses)</th>
+                    <th>Ingresos</th>
+                    <th>Gastos</th>
+                    <th>Deudas Activas</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% solicitudes.forEach(function(s){ %>
+                    <tr>
+                        <td><%= s.usuario_id %></td>
+                        <td><%= s.monto_solicitado %></td>
+                        <td><%= s.plazo_meses %></td>
+                        <td><%= s.ingresos_mensuales %></td>
+                        <td><%= s.gastos_mensuales %></td>
+                        <td><%= s.deudas_activas %></td>
+                        <td><%= s.created_at %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+    <script src="/js/main.js"></script>
+
+</body>
+</html>
