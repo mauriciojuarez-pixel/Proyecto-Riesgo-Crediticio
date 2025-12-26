@@ -14,7 +14,22 @@ function redirectIfAuthenticated(req, res, next) {
     next();
 }
 
+function authMiddleware(req, res, next) {
+    const token = req.cookies.token;
+
+    if (!token) {
+        return res.redirect("/auth/login");
+    }
+
+    req.token = token;
+    req.user = req.cookies.user ? JSON.parse(req.cookies.user) : null;
+    next();
+}
+
+
+
 module.exports = {
     ensureAuthenticated,
-    redirectIfAuthenticated
+    redirectIfAuthenticated,
+    authMiddleware
 };

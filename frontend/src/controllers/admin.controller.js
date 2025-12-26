@@ -15,7 +15,7 @@ async function getUsuarios(req, res) {
 // ================= SOLICITUDES =================
 async function getSolicitudes(req, res) {
     try {
-        const token = req.session.token;
+        const token = req.token;;
         const solicitudes = await adminService.getSolicitudes(token);
         res.render("admin/solicitudes", { solicitudes, user: req.session.user });
     } catch (error) {

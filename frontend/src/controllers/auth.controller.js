@@ -23,8 +23,17 @@ async function login(req, res) {
             return res.render("login", { error: data.detail || "Error al iniciar sesión", user: null });
         }
 
-        req.session.user = data.user;
-        req.session.token = data.access_token;
+        res.cookie("token", data.access_token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
+        });
+
+        res.cookie("user", JSON.stringify(data.user), {
+            secure: true,
+            sameSite: "none"
+        });
+
 
         return res.redirect("/dashboard");
 
@@ -66,15 +75,11 @@ async function register(req, res) {
 
 // ---------- LOGOUT ----------
 function logout(req, res) {
-    req.session.destroy(err => {
-        if (err) {
-            console.error("Error al cerrar sesión:", err);
-            return res.redirect("/dashboard");
-        }
-        res.clearCookie("connect.sid");
-        res.redirect("/auth/login");
-    });
+    res.clearCookie("token");
+    res.clearCookie("user");
+    res.redirect("/auth/login");
 }
+
 
 module.exports = {
     renderLogin,
