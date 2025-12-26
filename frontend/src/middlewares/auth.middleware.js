@@ -1,3 +1,6 @@
+// frontend/src/middlewares/auth.middleware.js
+
+
 // Verifica que el usuario esté logueado para rutas privadas
 function ensureAuthenticated(req, res, next) {
     if (req.session && req.session.user) {
@@ -22,9 +25,14 @@ function authMiddleware(req, res, next) {
         return res.redirect("/auth/login");
     }
 
-    req.token = token;
-    req.user = JSON.parse(user);
-    next();
+    try {
+        req.token = token;
+        req.user = JSON.parse(user); // convertir JSON a objeto
+        next();
+    } catch (err) {
+        console.error("Error parseando user cookie:", err);
+        return res.redirect("/auth/login");
+    }
 }
 
 

@@ -1,3 +1,6 @@
+// frontend/src/routes/auth.soutes.js
+
+
 const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/auth.controller");

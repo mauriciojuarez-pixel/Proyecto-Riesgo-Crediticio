@@ -1,3 +1,6 @@
+// frontend/src/service/utils/token.js
+
+
 // Funciones para manejar token en sessionStorage (frontend)
 const tokenUtil = {
     setToken: (token) => {

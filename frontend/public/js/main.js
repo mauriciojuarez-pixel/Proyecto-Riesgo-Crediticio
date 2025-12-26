@@ -1,43 +1,22 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("riskForm");
-    if (!form) return;
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+require("dotenv").config();
 
-    const resultadoDiv = document.getElementById("resultado");
+const app = express();
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        resultadoDiv.textContent = "Evaluando riesgo...";
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cookieParser()); // necesario para leer cookies
 
-        const formData = new FormData(form);
-        const datos = Object.fromEntries(formData.entries());
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "src/views"));
+app.use(express.static(path.join(__dirname, "public")));
 
-        // Convertir a números (importante para el backend ML)
-        datos.ingreso = parseFloat(datos.ingreso);
-        datos.deuda_ratio = parseFloat(datos.deuda_ratio);
-        datos.antiguedad = parseInt(datos.antiguedad);
-        datos.estabilidad_laboral = parseInt(datos.estabilidad_laboral);
+// Rutas
+app.use("/auth", require("./src/routes/auth.routes"));
+app.use("/", require("./src/routes/risk.routes"));
 
-        try {
-            const res = await fetch("/risk/predict", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(datos)
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                resultadoDiv.textContent = "Error: " + (data.error || "No se pudo evaluar");
-                return;
-            }
-
-            resultadoDiv.textContent = `Nivel de riesgo: ${data.riesgo}`;
-
-        } catch (err) {
-            console.error("Error frontend:", err);
-            resultadoDiv.textContent = "Error de conexión con el servidor";
-        }
-    });
-});
+// Puerto
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log("Frontend corriendo en puerto", PORT));

@@ -1,3 +1,4 @@
+// frontend/src/service/risk.service.js
 const BASE_URL = "https://riesgo-backend-w5jn.onrender.com";
 
 const riskService = {

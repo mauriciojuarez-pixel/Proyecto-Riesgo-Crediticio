@@ -1,3 +1,6 @@
+// frontend/src/service/auth.service.js
+
+
 const BASE_URL = "https://riesgo-backend-w5jn.onrender.com";
 
 const authService = {

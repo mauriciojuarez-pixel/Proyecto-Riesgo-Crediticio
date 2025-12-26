@@ -1,3 +1,6 @@
+// frontend/src/controllers/risk.controller.js
+
+
 const riskService = require("../services/risk.service.js");
 
 // Renderiza la página de evaluación de riesgo
@@ -18,8 +21,9 @@ function renderRisk(req, res) {
 // Procesa la evaluación de riesgo
 async function predictRisk(req, res) {
     try {
-        const user = req.user;      // middleware
-        const token = req.token;    // middleware
+        const user = req.cookies.user;
+    // middleware
+        const token = req.cookies.token;   // middleware
 
         if (!user || !user.id) {
             return res.status(401).json({ error: "Usuario no identificado. Inicie sesión nuevamente." });

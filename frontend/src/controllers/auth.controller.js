@@ -1,4 +1,4 @@
-// src/controllers/auth.controller.js
+// frontend/src/controllers/auth.controller.js
 const fetch = require("node-fetch");
 
 // ---------- RENDER LOGIN ----------
@@ -23,17 +23,16 @@ async function login(req, res) {
             return res.render("login", { error: data.detail || "Error al iniciar sesión", user: null });
         }
 
-        res.cookie("token", data.access_token, {
+        // Ajuste de cookies
+        const cookieOptions = {
             httpOnly: true,
-            secure: true,
-            sameSite: "none"
-        });
+            secure: process.env.NODE_ENV === "production", // true solo en prod HTTPS
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 3600000 // 1 hora
+        };
 
-        res.cookie("user", JSON.stringify(data.user), {
-            secure: true,
-            sameSite: "none"
-        });
-
+        res.cookie("token", data.access_token, cookieOptions);
+        res.cookie("user", JSON.stringify(data.user), cookieOptions);
 
         return res.redirect("/dashboard");
 
@@ -79,7 +78,6 @@ function logout(req, res) {
     res.clearCookie("user");
     res.redirect("/auth/login");
 }
-
 
 module.exports = {
     renderLogin,

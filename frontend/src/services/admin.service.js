@@ -1,3 +1,5 @@
+// frontend/src/service/admin.service.js
+
 const BASE_URL = "https://riesgo-backend-w5jn.onrender.com";
 
 const adminService = {
