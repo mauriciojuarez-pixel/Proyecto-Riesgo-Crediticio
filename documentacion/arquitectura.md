@@ -24,28 +24,51 @@ Proyecto_riesgo_credicitio/
 │   │   └── main.py                  # FastAPI app
 │   │
 │   ├── data/historical_data.csv
-│   ├── requirements.txt
-│   └── Dockerfile
-│
-├── frontend/                        # Interfaz Web
-│   ├── node_modules/               # Dependencias Node (NO se versiona)
-│   ├── src/
-│   │   ├── routes/
-│   │   │   ├── auth.routes.js
-│   │   │   └── risk.routes.js
-│   │   │
-│   │   ├── views/                  # EJS
-│   │   │   ├── login.ejs
-│   │   │   ├── dashboard.ejs
-│   │   │   └── result.ejs
-│   │   │
-│   │   └── public/
-│   │       ├── css/styles.css
-│   │       └── js/app.js
-│   │
-│   ├── app.js
-│   ├── package.json
-│   └── package-lock.json
+│   
+frontend/
+├── public/
+│   ├── css/
+│   │   └── styles.css
+│   ├── js/
+│   │   └── main.js
+│   └── img/
+├── src/
+│   ├── controllers/
+│   │   ├── auth.controller.js
+│   │   ├── risk.controller.js
+│   │   └── admin.controller.js
+│   ├── middlewares/
+│   │   ├── auth.middleware.js
+│   │   └── error.middleware.js
+│   │   └── token.middleware.js
+│   ├── routes/
+│   │   ├── auth.routes.js
+│   │   ├── risk.routes.js
+│   │   └── admin.routes.js
+│   ├── services/
+│   │   ├── 
+│   │   │   ├── auth.service.js
+│   │   │   ├── risk.service.js
+│   │   │   └── admin.service.js
+│   │   └── utils/
+│   │       └── token.js
+│   └── views/
+│       ├── login.ejs
+│       ├── register.ejs
+│       ├── dashboard.ejs
+│       ├── error.ejs
+│       ├── risk.ejs
+│       └── admin/
+│           ├── usuarios.ejs
+│           ├── solicitudes.ejs
+│           ├── decisiones.ejs
+│           └── retroalimentacion.ejs
+├── app.js
+├── package.json
+├── package-lock.json
+└── .env
+
+├── requirements.txt
 
 
 Usuario

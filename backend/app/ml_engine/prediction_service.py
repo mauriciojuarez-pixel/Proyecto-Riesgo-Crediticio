@@ -2,14 +2,24 @@
 
 import pandas as pd
 import joblib
-import os
+from pathlib import Path
 from .fuzzy_logic import calcular_riesgo_difuso
 
+# ----------------------------
 # Cargar modelo ML entrenado
-MODEL_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "ml_model.joblib"))
-model = joblib.load(MODEL_PATH)
+# ----------------------------
+BASE_DIR = Path(__file__).parent  # backend/app/ml_engine
+MODEL_PATH = BASE_DIR / "ml_model.joblib"
 
-def get_final_risk(data):
+try:
+    model = joblib.load(MODEL_PATH)
+except FileNotFoundError:
+    raise FileNotFoundError(f"Modelo ML no encontrado en {MODEL_PATH}")
+
+# ----------------------------
+# Función de cálculo de riesgo
+# ----------------------------
+def get_final_risk(data: dict) -> dict:
     """
     Calcula el riesgo final combinando ML y Lógica Difusa.
     
@@ -20,7 +30,6 @@ def get_final_risk(data):
         "estabilidad_laboral": int (0-10)
     }
     """
-
     try:
         # --- Validar y convertir tipos ---
         ingreso = float(data.get("ingreso", 0))
@@ -29,7 +38,7 @@ def get_final_risk(data):
         estabilidad_laboral = int(data.get("estabilidad_laboral", 5))
 
         # --- Preparar input para ML ---
-        columnas_modelo = model.feature_names_in_.tolist()  # columnas exactas que usó el modelo
+        columnas_modelo = getattr(model, "feature_names_in_", ["ingreso", "deuda_ratio", "antiguedad"])
         X_dict = {col: locals()[col] for col in columnas_modelo}  # tomar solo columnas necesarias
         X = pd.DataFrame([X_dict])
 
@@ -47,7 +56,7 @@ def get_final_risk(data):
         else:
             rec = "Rechazar"
 
-        # Retornar resultados redondeados
+        # --- Retornar resultados ---
         return {
             "P_inc_ML": round(p_inc, 2),
             "Riesgo_Final_LF": round(riesgo, 2),
