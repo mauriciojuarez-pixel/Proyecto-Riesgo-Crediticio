@@ -55,9 +55,17 @@
 
         h1 {
             font-size: 26px;
-            margin-bottom: 25px;
+            margin-bottom: 10px;
             color: #333;
             text-align: center;
+        }
+
+        .info {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 20px;
+            text-align: center;
+            line-height: 1.5;
         }
 
         form input {
@@ -120,25 +128,30 @@
             <span>Bienvenido, <%= user.username %></span>
             <div>
                 <a href="/dashboard">Dashboard</a>
-                <a href="/auth/logout">Cerrar Sesión</a>
+                <a href="/views/login">Cerrar Sesión</a>
             </div>
         <% } else { %>
             <span>Bienvenido, Invitado</span>
-            <a href="/auth/login">Iniciar Sesión</a>
+            <a href="/views/login">Iniciar Sesión</a>
         <% } %>
     </nav>
 
     <div class="container">
         <h1>Evaluación de Riesgo Crediticio</h1>
 
+        <div class="info">
+            En esta vista puedes evaluar el riesgo crediticio de un usuario. <br>
+            Llena todos los campos con los datos solicitados y presiona <strong>Evaluar Riesgo</strong> para obtener el resultado.
+        </div>
+
         <% if (error) { %>
             <div class="error"><%= error %></div>
         <% } %>
 
         <form id="riskForm">
-            <input type="number" name="ingreso" placeholder="Ingreso mensual" required>
-            <input type="number" name="deuda_ratio" placeholder="Ratio de deuda" required>
-            <input type="number" name="antiguedad" placeholder="Años de antigüedad laboral" required>
+            <input type="number" name="ingreso" placeholder="Ingreso mensual (ej. 2000)" required>
+            <input type="number" name="deuda_ratio" placeholder="Ratio de deuda (ej. 30)" required>
+            <input type="number" name="antiguedad" placeholder="Años de antigüedad laboral (ej. 5)" required>
             <input type="number" name="estabilidad_laboral" placeholder="Estabilidad laboral (1-5)" required>
             <button type="submit">Evaluar Riesgo</button>
         </form>
