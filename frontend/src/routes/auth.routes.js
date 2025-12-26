@@ -7,9 +7,8 @@ const { redirectIfAuthenticated } = require("../middlewares/auth.middleware.js")
 // -------------------- LOGIN --------------------
 // Mostrar formulario de login
 router.get("/login", redirectIfAuthenticated, (req, res) => {
-    res.render("auth/login", { error: null });
+    res.render("login", { error: null });
 });
-
 // Procesar login
 router.post("/login", authController.login);
 
@@ -19,9 +18,8 @@ router.get("/logout", authController.logout);
 // -------------------- REGISTER --------------------
 // Mostrar formulario de registro
 router.get("/register", redirectIfAuthenticated, (req, res) => {
-    res.render("auth/register", { error: null, success: null });
+    res.render("register", { error: null, resultado: null });
 });
-
 // Procesar registro
 router.post("/register", authController.register);
 

@@ -15,18 +15,20 @@ async function login(req, res) {
         const data = await response.json();
 
         if (!response.ok) {
-            return res.render("auth/login", { error: data.detail || "Error al iniciar sesión" });
+            // Renderiza login con error
+            return res.render("login", { error: data.detail || "Error al iniciar sesión" });
         }
 
         // Guardar usuario y token en sesión del frontend
         req.session.user = data.user;
         req.session.token = data.access_token;
 
+        // Redirigir al dashboard
         return res.redirect("/dashboard");
 
     } catch (err) {
         console.error("Error login:", err);
-        return res.render("auth/login", { error: "Error de conexión con el servidor" });
+        return res.render("login", { error: "Error de conexión con el servidor" });
     }
 }
 
@@ -38,7 +40,7 @@ function logout(req, res) {
             return res.redirect("/dashboard");
         }
         res.clearCookie("connect.sid"); // Limpiar cookie de sesión
-        res.redirect("/auth/login");
+        res.redirect("/login");
     });
 }
 
@@ -56,15 +58,16 @@ async function register(req, res) {
         const data = await response.json();
 
         if (!response.ok) {
-            return res.render("auth/register", { error: data.detail || "Error al registrarse", success: null });
+            // Renderiza register con error
+            return res.render("register", { error: data.detail || "Error al registrarse", success: null });
         }
 
         // Registro exitoso
-        return res.render("auth/register", { error: null, success: "Registro exitoso, inicia sesión" });
+        return res.render("register", { error: null, success: "Registro exitoso, inicia sesión" });
 
     } catch (err) {
         console.error("Error register:", err);
-        return res.render("auth/register", { error: "Error de conexión con el servidor", success: null });
+        return res.render("register", { error: "Error de conexión con el servidor", success: null });
     }
 }
 
