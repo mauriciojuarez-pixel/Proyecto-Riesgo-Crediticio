@@ -1,19 +1,21 @@
-// frontend/src/routes/auth.routes.js
 const express = require("express");
 const router = express.Router();
-const authController = require("../controllers/auth.controller.js");
+const { login } = require("../controllers/auth.controller.js");
+const { redirectIfAuthenticated } = require("../middlewares/auth.middleware.js");
 
-// ----------------------
-// RUTAS GET - renderizar vistas
-// ----------------------
-router.get("/login", authController.renderLogin);
-router.get("/register", authController.renderRegister);
-router.get("/logout", authController.logout); // nueva ruta para cerrar sesión
+// Mostrar login
+router.get("/login", redirectIfAuthenticated, (req, res) => {
+    res.render("auth/login", { error: null });
+});
 
-// ----------------------
-// RUTAS POST - acciones
-// ----------------------
-router.post("/login", authController.login);   // login crea sesión y redirige
-router.post("/register", authController.register); // registro opcionalmente inicia sesión
+// Procesar login
+router.post("/login", login);
+
+// Logout
+router.get("/logout", (req, res) => {
+    req.session.destroy(() => {
+        res.redirect("/auth/login");
+    });
+});
 
 module.exports = router;

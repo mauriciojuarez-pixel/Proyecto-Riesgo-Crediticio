@@ -29,7 +29,7 @@
         <% } %>
 
         <!-- Formulario POST directo al backend -->
-        <form action="/auth/login" method="POST">
+        <form method="POST" action="/auth/login">
             <label>Email:</label>
             <input type="email" name="email" placeholder="tu@email.com" required>
             
@@ -38,6 +38,10 @@
             
             <button type="submit">Ingresar</button>
         </form>
+        <% if (error) { %>
+            <div class="error"><%= error %></div>
+        <% } %>
+
 
         <div class="login-footer">
             ¿No tienes cuenta? <a href="/auth/register">Regístrate</a>
