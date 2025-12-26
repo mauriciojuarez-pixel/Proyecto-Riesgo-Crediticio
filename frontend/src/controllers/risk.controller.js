@@ -1,44 +1,60 @@
 const fetch = require("node-fetch");
 
+const API_URL = process.env.API_URL || "http://localhost:8000";
+
 const riskController = {
+
     renderRisk: (req, res) => {
         if (!req.session.user) {
             return res.redirect("/auth/login");
         }
-        // Pasar info del usuario a la vista
-        res.render("risk", { user: req.session.user, error: null });
+
+        res.render("risk", {
+            user: req.session.user,
+            error: null,
+            resultado: null
+        });
     },
 
     predictRisk: async (req, res) => {
         try {
             const user = req.session.user;
+
             if (!user || !user.id) {
-                return res.status(401).json({ error: "Usuario no identificado. Vuelve a iniciar sesión." });
+                return res.status(401).json({ error: "Usuario no identificado. Inicie sesión nuevamente." });
             }
 
             const data = {
-                cliente_id: user.id,  // enviar el ID real del usuario
-                ingreso: parseFloat(req.body.ingreso),
-                deuda_ratio: parseFloat(req.body.deuda_ratio),
-                antiguedad: parseInt(req.body.antiguedad),
-                estabilidad_laboral: parseInt(req.body.estabilidad_laboral)
+                cliente_id: user.id,
+                ingreso: Number(req.body.ingreso),
+                deuda_ratio: Number(req.body.deuda_ratio),
+                antiguedad: Number(req.body.antiguedad),
+                estabilidad_laboral: Number(req.body.estabilidad_laboral)
             };
 
-            const response = await fetch("http://localhost:8000/risk/predict_risk", {
+            const response = await fetch(`${API_URL}/risk/predict_risk`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${req.session.token}`
+                },
                 body: JSON.stringify(data),
             });
 
-            const resultado = await response.json();
+            const result = await response.json();
+
             if (!response.ok) {
-                return res.status(response.status).json({ error: resultado.detail || "Error en backend" });
+                console.error("Backend error:", result);
+                return res.status(response.status).json({
+                    error: result.detail || "Error procesando la evaluación de riesgo"
+                });
             }
 
-            res.json(resultado);
-        } catch (err) {
-            console.error(err);
-            res.status(500).json({ error: "Error al comunicarse con el backend" });
+            res.json(result);
+
+        } catch (error) {
+            console.error("Error en predictRisk:", error);
+            res.status(500).json({ error: "No se pudo conectar con el motor de riesgo" });
         }
     }
 };

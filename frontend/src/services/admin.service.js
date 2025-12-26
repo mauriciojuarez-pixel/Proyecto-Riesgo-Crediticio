@@ -1,53 +1,58 @@
-// frontend/src/services/admin.service.js
 const axios = require("axios");
-const BASE_URL = process.env.BACKEND_URL || "http://localhost:8000";
-const { getToken } = require("./utils/token");
+const { getToken } = require("../utils/token");
+
+// Detecta entorno automáticamente
+const API_URL = process.env.API_URL || "http://localhost:8000";
+
+const api = axios.create({
+    baseURL: API_URL,
+    timeout: 10000,
+    headers: { "Content-Type": "application/json" }
+});
+
+function authHeader() {
+    const token = getToken();
+    if (!token) throw new Error("Token no encontrado");
+    return { Authorization: `Bearer ${token}` };
+}
 
 async function getUsuarios() {
     try {
-        const token = getToken();
-        const response = await axios.get(`${BASE_URL}/admin/usuarios`, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        return response.data.usuarios;
+        const res = await api.get("/admin/usuarios", { headers: authHeader() });
+        return res.data.usuarios;
     } catch (err) {
-        throw new Error(err.response?.data?.detail || err.message);
+        console.error("Error obteniendo usuarios:", err.response?.data || err.message);
+        throw new Error(err.response?.data?.detail || "No se pudo cargar usuarios");
     }
 }
 
 async function getSolicitudes() {
     try {
-        const token = getToken();
-        const response = await axios.get(`${BASE_URL}/admin/solicitudes`, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        return response.data.solicitudes;
+        const res = await api.get("/admin/solicitudes", { headers: authHeader() });
+        return res.data.solicitudes;
     } catch (err) {
-        throw new Error(err.response?.data?.detail || err.message);
+        console.error("Error obteniendo solicitudes:", err.response?.data || err.message);
+        throw new Error(err.response?.data?.detail || "No se pudo cargar solicitudes");
     }
 }
 
 async function getDecisiones() {
     try {
-        const token = getToken();
-        const response = await axios.get(`${BASE_URL}/admin/decisiones`, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        return response.data.decisiones;
+        const res = await api.get("/admin/decisiones", { headers: authHeader() });
+        return res.data.decisiones;
     } catch (err) {
-        throw new Error(err.response?.data?.detail || err.message);
+        console.error("Error obteniendo decisiones:", err.response?.data || err.message);
+        throw new Error(err.response?.data?.detail || "No se pudo cargar decisiones");
     }
 }
 
 async function getFeedback() {
     try {
-        const token = getToken();
-        const response = await axios.get(`${BASE_URL}/admin/retroalimentacion`, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        return response.data.retroalimentacion;
+        const res = await api.get("/admin/retroalimentacion", { headers: authHeader() });
+        return res.data.retroalimentacion;
     } catch (err) {
-        throw new Error(err.response?.data?.detail || err.message);
+        console.error("Error obteniendo feedback:", err.response?.data || err.message);
+        throw new Error(err.response?.data?.detail || "No se pudo cargar retroalimentación");
     }
 }
 
