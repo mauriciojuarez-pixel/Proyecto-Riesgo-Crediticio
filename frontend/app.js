@@ -1,3 +1,4 @@
+// frontend/app.js
 const express = require("express");
 const path = require("path");
 const session = require("express-session");
@@ -8,12 +9,12 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // -------------------- Middlewares --------------------
-const { ensureAuth } = require("./src/middlewares/auth.middleware");
+const { ensureAuth } = require("./src/middlewares/auth.middleware.js");
 
 // -------------------- Routers --------------------
-const authRoutes = require("./src/routes/auth.routes");
-const riskRoutes = require("./src/routes/risk.routes");
-const adminRoutes = require("./src/routes/admin.routes");
+const authRoutes = require("./src/routes/auth.routes.js");
+const riskRoutes = require("./src/routes/risk.routes.js");
+const adminRoutes = require("./src/routes/admin.routes.js");
 
 // -------------------- Configuración --------------------
 app.use(express.json());
@@ -52,7 +53,7 @@ app.get("/dashboard", ensureAuth, (req, res) => {
 });
 
 // -------------------- Manejo de errores --------------------
-const { errorHandler } = require("./src/middlewares/error.middleware");
+const { errorHandler } = require("./src/middlewares/error.middleware.js");
 app.use(errorHandler);
 
 // -------------------- Servidor --------------------

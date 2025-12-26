@@ -1,8 +1,8 @@
 // frontend/src/routes/admin.routes.js
 const express = require("express");
 const router = express.Router();
-const adminController = require("../controllers/admin.controller");
-const { ensureAuthenticated } = require("../middlewares/auth.middleware");
+const adminController = require("../controllers/admin.controller.js");
+const { ensureAuthenticated } = require("../middlewares/auth.middleware.js");
 
 // Dashboard y vistas admin
 router.get("/", ensureAuthenticated, adminController.renderDashboard);

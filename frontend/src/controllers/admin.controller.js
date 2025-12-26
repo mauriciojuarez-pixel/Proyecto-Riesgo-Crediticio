@@ -1,5 +1,5 @@
 // frontend/src/controllers/admin.controller.js
-const adminService = require("../services/admin.service");
+const adminService = require("../services/admin.service.js");
 
 const adminController = {
     renderDashboard: (req, res) => {

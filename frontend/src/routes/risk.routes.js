@@ -1,7 +1,9 @@
+// frontend/src/routes/risk.routes.js
+
 const express = require("express");
 const router = express.Router();
-const riskController = require("../controllers/risk.controller");
-const { ensureAuth } = require("../middlewares/auth.middleware");
+const riskController = require("../controllers/risk.controller.js");
+const { ensureAuth } = require("../middlewares/auth.middleware.js");
 
 // GET: página de evaluación
 router.get("/", ensureAuth, riskController.renderRisk);

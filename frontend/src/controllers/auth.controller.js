@@ -1,6 +1,6 @@
 // frontend/src/controllers/auth.controller.js
 
-const authService = require("../services/auth.service");
+const authService = require("../services/auth.service.js");
 
 const authController = {
   // Renderiza la página de registro

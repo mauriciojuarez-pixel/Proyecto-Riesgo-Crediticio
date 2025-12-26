@@ -1,6 +1,6 @@
 // frontend/src/controllers/risk.controller.js
 
-const riskService = require("../services/risk.services");
+const riskService = require("../services/risk.services.js");
 
 const riskController = {
 
