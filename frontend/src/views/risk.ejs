@@ -21,6 +21,13 @@
             background-color: #f8d7da;
             color: #721c24;
         }
+        form input, form button {
+            display: block;
+            margin: 10px 0;
+            padding: 8px;
+            width: 100%;
+            max-width: 400px;
+        }
     </style>
 </head>
 <body>
@@ -68,6 +75,17 @@
                 datos.antiguedad = parseInt(datos.antiguedad);
                 datos.estabilidad_laboral = parseInt(datos.estabilidad_laboral);
 
+                // Agregar user_id desde cookie (si existe)
+                const userCookie = document.cookie.split('; ').find(row => row.startsWith('user='));
+                if (userCookie) {
+                    try {
+                        const userObj = JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
+                        datos.cliente_id = userObj.user_id;
+                    } catch (err) {
+                        console.error("Error parseando cookie user:", err);
+                    }
+                }
+
                 try {
                     const res = await fetch("/risk/predict", {
                         method: "POST",
@@ -85,8 +103,12 @@
                         return;
                     }
 
-                    // Mostrar resultados del modelo
-                    resultadoDiv.textContent = `Nivel de riesgo: ${data.riesgo || 'Indefinido'}\nScore: ${data.score || '-'}`;
+                    // Mostrar resultados del backend (modelo ML + fuzzy)
+                    let textoResultado = `Nivel de riesgo: ${data.riesgo || 'Indefinido'}`;
+                    if (data.score) textoResultado += `\nScore: ${data.score}`;
+                    if (data.fuzzy) textoResultado += `\nFuzzy Logic: ${data.fuzzy}`;
+
+                    resultadoDiv.textContent = textoResultado;
                     resultadoDiv.classList.add("exito");
 
                 } catch (err) {

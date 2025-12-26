@@ -13,7 +13,7 @@
 
         <% 
             // Aseguramos que la variable 'error' exista
-            const errorMsg = typeof error !== 'undefined' ? error : null;
+            const errorMsg = typeof error !== 'undefined' && error ? error : null;
         %>
 
         <% if (errorMsg) { %>

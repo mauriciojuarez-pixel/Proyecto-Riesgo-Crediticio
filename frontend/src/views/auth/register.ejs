@@ -13,8 +13,8 @@
 
         <% 
             // Aseguramos que siempre existan las variables
-            const errorMsg = typeof error !== 'undefined' ? error : null;
-            const successMsg = typeof success !== 'undefined' ? success : null;
+            const errorMsg = typeof error !== 'undefined' && error ? error : null;
+            const successMsg = typeof success !== 'undefined' && success ? success : null;
         %>
 
         <% if (errorMsg) { %>

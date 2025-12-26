@@ -9,24 +9,16 @@
 </head>
 <body>
     <nav>
-        <% const currentUser = typeof user !== 'undefined' ? user : null; %>
-        <span>Bienvenido, <%= currentUser ? currentUser.username : "Invitado" %></span>
+        <span>Bienvenido, <%= user.username %></span>
         <a href="/auth/logout">Cerrar Sesión</a>
     </nav>
 
     <div class="container">
         <h1>Dashboard</h1>
+        <p>Tu ID de usuario: <%= user.user_id %></p>
+        <p>Correo: <%= user.email %></p>
 
-        <% if (error) { %>
-            <div class="alert alert-danger"><%= error %></div>
-        <% } %>
-
-        <p>Bienvenido al panel principal del sistema de evaluación de riesgo crediticio.</p>
-
-        <div class="links">
-            <a href="/dashboard">Evaluar Riesgo</a><br>
-            <a href="/admin/usuarios">Administración de Usuarios</a>
-        </div>
+        <a href="/dashboard/risk"><button>Evaluar Riesgo</button></a>
     </div>
 </body>
 </html>

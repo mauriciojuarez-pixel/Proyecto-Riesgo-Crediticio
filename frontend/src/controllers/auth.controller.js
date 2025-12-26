@@ -17,19 +17,12 @@ async function login(req, res) {
             body: JSON.stringify({ email, password })
         });
 
-        const data = await response.json();
+        const data = await response.json(); // parsear solo UNA vez
 
-    if (!response.ok) {
-        let msg = "Error al iniciar sesión";
-        try {
-            const errData = await response.json();
-            if (errData.detail) msg = errData.detail;
-            else if (errData.errors) msg = errData.errors.map(e => e.msg).join(", ");
-        } catch (e) {
-            console.error("Error parseando response:", e);
+        if (!response.ok) {
+            let msg = data.detail || "Error al iniciar sesión";
+            return res.render("auth/login", { error: msg, user: null });
         }
-        return res.render("auth/login", { error: msg, user: null });
-    }
 
         // Ajuste de cookies
         const cookieOptions = {
@@ -66,31 +59,21 @@ async function register(req, res) {
             body: JSON.stringify({ username, email, password })
         });
 
-        let data;
-        try {
-            data = await response.json(); // parsear solo UNA vez
-        } catch (e) {
-            console.error("Error parseando JSON de backend:", e);
-            data = {}; // fallback
-        }
+        const data = await response.json(); // parsear solo UNA vez
 
         if (!response.ok) {
-            // manejar error de forma segura
-            let msg = "Error al registrarse";
-            if (data.detail) msg = data.detail;
-            else if (data.errors) msg = data.errors.map(e => e.msg).join(", ");
+            let msg = data.detail || data.message || "Error al registrarse";
             return res.render("auth/register", { error: msg, success: null, user: null });
         }
 
-        // Si todo salió bien
-        return res.render("auth/register", { error: null, success: "Registro exitoso, inicia sesión", user: null });
+        // Éxito: mostrar mensaje del backend
+        return res.render("auth/register", { error: null, success: data.message || "Registro exitoso, inicia sesión", user: null });
 
     } catch (err) {
         console.error("Error register:", err);
         return res.render("auth/register", { error: "Error de conexión con el servidor", success: null, user: null });
     }
 }
-
 
 // ---------- LOGOUT ----------
 function logout(req, res) {
