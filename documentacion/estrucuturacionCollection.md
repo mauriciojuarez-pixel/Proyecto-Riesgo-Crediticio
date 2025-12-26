@@ -34,7 +34,7 @@ ultimo_login: Fecha del último acceso (opcional).
 Almacena las solicitudes de crédito de los clientes.
 
 Documento de ejemplo:
-
+```json
 {
   "_id": ObjectId,
   "usuario_id": ObjectId,       // referencia a Usuarios
@@ -44,7 +44,7 @@ Documento de ejemplo:
   "estabilidad_laboral": 8,
   "fecha": ISODate
 }
-
+```
 
 Campos clave:
 
@@ -54,12 +54,12 @@ ingreso, deuda_ratio, antiguedad, estabilidad_laboral: Datos financieros y labor
 
 fecha: Fecha de la solicitud.
 
-3. DecisionesRiesgo
+## 3. DecisionesRiesgo
 
 Almacena las decisiones generadas por el sistema inteligente (ML + lógica difusa).
 
 Documento de ejemplo:
-
+```json
 {
   "_id": ObjectId,
   "solicitud_id": ObjectId,        // referencia a SolicitudesClientes
@@ -68,7 +68,7 @@ Documento de ejemplo:
   "Recomendacion": "Aprobar",     // Aprobar / Rechazar
   "fecha": ISODate
 }
-
+```
 
 Campos clave:
 
@@ -82,12 +82,12 @@ Recomendacion: Resultado final.
 
 fecha: Fecha de la decisión.
 
-4. Retroalimentacion
+## 4. Retroalimentacion
 
 Almacena comentarios o feedback sobre decisiones o el sistema.
 
 Documento de ejemplo:
-
+```json
 {
   "_id": ObjectId,
   "usuario_id": ObjectId,       // referencia a Usuarios
@@ -95,7 +95,7 @@ Documento de ejemplo:
   "comentario": "El monto aprobado es muy bajo",
   "fecha": ISODate
 }
-
+```
 
 Campos clave:
 
