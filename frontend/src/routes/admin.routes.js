@@ -1,18 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const adminController = require("../controllers/admin.controller.js");
-const { ensureAuthenticated } = require("../middlewares/auth.middleware.js");
 
-// Usuarios
-router.get("/usuarios", ensureAuthenticated, adminController.renderUsuarios);
+const {
+    getUsuarios,
+    createUser,
+    updateUser,
+    deleteUser
+} = require("../controllers/admin.controller");
 
-// Solicitudes
-router.get("/solicitudes", ensureAuthenticated, adminController.renderSolicitudes);
-
-// Decisiones
-router.put("/decisiones/:id", ensureAuthenticated, adminController.actualizarDecision);
-
-// Retroalimentación
-router.get("/retroalimentacion", ensureAuthenticated, adminController.renderRetroalimentacion);
+router.get("/usuarios", getUsuarios);
+router.post("/usuarios", createUser);
+router.put("/usuarios/:id", updateUser);
+router.delete("/usuarios/:id", deleteUser);
 
 module.exports = router;
