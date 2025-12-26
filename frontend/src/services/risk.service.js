@@ -1,3 +1,6 @@
+// frontend/src/services/risk.services.js
+
+
 const axios = require("axios");
 
 // Detecta entorno automáticamente

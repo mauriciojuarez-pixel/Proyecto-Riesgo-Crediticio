@@ -1,3 +1,5 @@
+// frontend/src/services/auth.services.js
+
 const axios = require("axios");
 
 // Detecta entorno automáticamente

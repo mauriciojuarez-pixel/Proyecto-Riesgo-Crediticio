@@ -1,5 +1,4 @@
 const axios = require("axios");
-const { getToken } = require("./utils/token");
 
 // Detecta entorno automáticamente
 const API_URL = process.env.API_URL || "http://localhost:8000";
@@ -10,15 +9,15 @@ const api = axios.create({
     headers: { "Content-Type": "application/json" }
 });
 
-function authHeader() {
-    const token = getToken();
-    if (!token) throw new Error("Token no encontrado");
+// Ahora recibimos el token como parámetro
+function authHeader(token) {
+    if (!token) throw new Error("Token no encontrado en sesión");
     return { Authorization: `Bearer ${token}` };
 }
 
-async function getUsuarios() {
+async function getUsuarios(token) {
     try {
-        const res = await api.get("/admin/usuarios", { headers: authHeader() });
+        const res = await api.get("/admin/usuarios", { headers: authHeader(token) });
         return res.data.usuarios;
     } catch (err) {
         console.error("Error obteniendo usuarios:", err.response?.data || err.message);
@@ -26,9 +25,9 @@ async function getUsuarios() {
     }
 }
 
-async function getSolicitudes() {
+async function getSolicitudes(token) {
     try {
-        const res = await api.get("/admin/solicitudes", { headers: authHeader() });
+        const res = await api.get("/admin/solicitudes", { headers: authHeader(token) });
         return res.data.solicitudes;
     } catch (err) {
         console.error("Error obteniendo solicitudes:", err.response?.data || err.message);
@@ -36,9 +35,9 @@ async function getSolicitudes() {
     }
 }
 
-async function getDecisiones() {
+async function getDecisiones(token) {
     try {
-        const res = await api.get("/admin/decisiones", { headers: authHeader() });
+        const res = await api.get("/admin/decisiones", { headers: authHeader(token) });
         return res.data.decisiones;
     } catch (err) {
         console.error("Error obteniendo decisiones:", err.response?.data || err.message);
@@ -46,9 +45,9 @@ async function getDecisiones() {
     }
 }
 
-async function getFeedback() {
+async function getFeedback(token) {
     try {
-        const res = await api.get("/admin/retroalimentacion", { headers: authHeader() });
+        const res = await api.get("/admin/retroalimentacion", { headers: authHeader(token) });
         return res.data.retroalimentacion;
     } catch (err) {
         console.error("Error obteniendo feedback:", err.response?.data || err.message);
