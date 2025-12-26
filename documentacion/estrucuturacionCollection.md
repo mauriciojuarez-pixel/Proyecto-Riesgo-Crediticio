@@ -14,7 +14,7 @@ Almacena información de los usuarios (clientes o administradores).
   "created_at": ISODate,
   "ultimo_login": ISODate
 }
-
+```
 Campos clave:
 
 nombre: Nombre completo del usuario.
