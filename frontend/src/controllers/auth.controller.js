@@ -1,3 +1,5 @@
+// frontend/src/controllers/auth.controller.js
+
 const fetch = require("node-fetch");
 
 async function login(req, res) {

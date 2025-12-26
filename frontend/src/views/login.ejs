@@ -4,49 +4,89 @@
     <meta charset="UTF-8">
     <title>Login - Riesgo Crediticio</title>
     <style>
-        * { box-sizing: border-box; margin:0; padding:0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { height: 100vh; display:flex; justify-content:center; align-items:center; background:linear-gradient(135deg,#667eea,#764ba2); }
-        .login-container { background:#fff; padding:40px 50px; border-radius:15px; box-shadow:0 15px 40px rgba(0,0,0,0.2); width:360px; text-align:center; }
-        h1 { margin-bottom:30px; color:#333; }
-        label { display:block; text-align:left; margin-bottom:5px; font-weight:600; color:#555; font-size:14px; }
-        input { width:100%; padding:12px 15px; margin-bottom:20px; border-radius:10px; border:1px solid #ccc; font-size:14px; transition:all 0.3s ease; }
-        input:focus { border-color:#667eea; box-shadow:0 0 5px rgba(102,126,234,0.5); outline:none; }
-        button { width:100%; padding:12px; border:none; border-radius:10px; background:#667eea; color:#fff; font-size:16px; font-weight:600; cursor:pointer; transition:background 0.3s, transform 0.2s; }
-        button:hover { background:#5a67d8; transform:translateY(-2px); }
-        .error { background-color:#ffe0e0; color:#ff0000; padding:10px; margin-bottom:15px; border-radius:10px; font-size:14px; }
-        .login-footer { margin-top:20px; font-size:14px; color:#555; }
-        .login-footer a { color:#667eea; text-decoration:none; font-weight:600; }
-        .login-footer a:hover { text-decoration:underline; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #667eea, #764ba2); }
+        .login-container { background: #fff; padding: 40px 50px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); width: 360px; text-align: center; }
+        h1 { margin-bottom: 30px; color: #333; }
+        label { display: block; text-align: left; margin-bottom: 5px; font-weight: 600; color: #555; font-size: 14px; }
+        input[type="email"], input[type="password"] { width: 100%; padding: 12px 15px; margin-bottom: 20px; border-radius: 10px; border: 1px solid #ccc; font-size: 14px; transition: all 0.3s ease; }
+        input[type="email"]:focus, input[type="password"]:focus { border-color: #667eea; box-shadow: 0 0 5px rgba(102, 126, 234, 0.5); outline: none; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 10px; background: #667eea; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.3s, transform 0.2s; }
+        button:hover { background: #5a67d8; transform: translateY(-2px); }
+        .error { background-color: #ffe0e0; color: #ff0000; padding: 10px; margin-bottom: 15px; border-radius: 10px; font-size: 14px; display: none; }
+        .login-footer { margin-top: 20px; font-size: 14px; color: #555; }
+        .login-footer a { color: #667eea; text-decoration: none; font-weight: 600; }
+        .login-footer a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
-    <div class="login-container">
-        <h1>Iniciar Sesión</h1>
+<div class="login-container">
+    <h1>Iniciar Sesión</h1>
 
-        <% if (error) { %>
-            <div class="error"><%= error %></div>
-        <% } %>
+    <form id="loginForm">
+        <label>Email:</label>
+        <input type="email" name="email" placeholder="tu@email.com" required>
+        
+        <label>Contraseña:</label>
+        <input type="password" name="password" placeholder="********" required>
+        
+        <button type="submit">Ingresar</button>
+    </form>
 
-        <!-- Formulario POST directo al backend -->
-        <form method="POST" action="/auth/login">
-            <label>Email:</label>
-            <input type="email" name="email" placeholder="tu@email.com" required>
-            
-            <label>Contraseña:</label>
-            <input type="password" name="password" placeholder="********" required>
-            
-            <button type="submit">Ingresar</button>
-        </form>
-        <% if (error) { %>
-            <div class="error"><%= error %></div>
-        <% } %>
+    <div id="error" class="error"></div>
 
-
-        <div class="login-footer">
-            ¿No tienes cuenta? <a href="/auth/register">Regístrate</a>
-        </div>
+    <div class="login-footer">
+        ¿No tienes cuenta? <a href="/auth/register">Regístrate</a>
     </div>
+</div>
+
+<script>
+    // Redirige al dashboard si ya hay usuario en localStorage
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+        window.location.href = '/dashboard';
+    }
+
+    const form = document.getElementById('loginForm');
+    const errorDiv = document.getElementById('error');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorDiv.style.display = 'none';
+
+        const formData = new FormData(form);
+        const email = formData.get('email');
+        const password = formData.get('password');
+
+        try {
+            const res = await fetch('https://riesgo-backend-w5jn.onrender.com/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                errorDiv.textContent = data.detail || 'Usuario o contraseña incorrecta';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Guardar token y usuario en localStorage
+            localStorage.setItem('token', data.access_token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+
+            // Redirigir al dashboard
+            window.location.href = '/dashboard';
+        } catch (err) {
+            console.error(err);
+            errorDiv.textContent = 'Error de conexión con el servidor';
+            errorDiv.style.display = 'block';
+        }
+    });
+</script>
 
 </body>
 </html>

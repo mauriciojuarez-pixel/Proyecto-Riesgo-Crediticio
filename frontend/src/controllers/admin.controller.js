@@ -5,7 +5,7 @@ const adminService = require("../services/admin.service.js");
  * Renderiza el dashboard principal del admin
  */
 async function renderDashboard(req, res) {
-    if (!req.session.user) return res.redirect("/auth/login");
+    if (!req.session?.user) return res.redirect("/auth/login");
 
     res.render("admin/dashboard", {
         user: req.session.user
@@ -16,7 +16,7 @@ async function renderDashboard(req, res) {
  * Renderiza la lista de usuarios
  */
 async function usuarios(req, res) {
-    if (!req.session.token) return res.redirect("/auth/login");
+    if (!req.session?.token) return res.redirect("/auth/login");
 
     try {
         const usuarios = await adminService.getUsuarios(req.session.token);
@@ -31,7 +31,7 @@ async function usuarios(req, res) {
  * Renderiza la lista de solicitudes
  */
 async function solicitudes(req, res) {
-    if (!req.session.token) return res.redirect("/auth/login");
+    if (!req.session?.token) return res.redirect("/auth/login");
 
     try {
         const solicitudes = await adminService.getSolicitudes(req.session.token);
@@ -46,7 +46,7 @@ async function solicitudes(req, res) {
  * Renderiza las decisiones tomadas
  */
 async function decisiones(req, res) {
-    if (!req.session.token) return res.redirect("/auth/login");
+    if (!req.session?.token) return res.redirect("/auth/login");
 
     try {
         const decisiones = await adminService.getDecisiones(req.session.token);
@@ -61,7 +61,7 @@ async function decisiones(req, res) {
  * Renderiza la retroalimentación recibida
  */
 async function retroalimentacion(req, res) {
-    if (!req.session.token) return res.redirect("/auth/login");
+    if (!req.session?.token) return res.redirect("/auth/login");
 
     try {
         const feedback = await adminService.getFeedback(req.session.token);
@@ -72,7 +72,16 @@ async function retroalimentacion(req, res) {
     }
 }
 
-// Exportamos funciones individualmente para evitar el error "argument handler must be a function"
+// Depuración: asegurarse que todas las funciones estén definidas
+console.log("Controladores admin cargados:", {
+    renderDashboard,
+    usuarios,
+    solicitudes,
+    decisiones,
+    retroalimentacion
+});
+
+// Exportamos funciones individualmente para que router siempre reciba funciones válidas
 module.exports = {
     renderDashboard,
     usuarios,
