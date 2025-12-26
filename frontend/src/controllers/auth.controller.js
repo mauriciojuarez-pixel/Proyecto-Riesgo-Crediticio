@@ -53,10 +53,36 @@ async function register(req, res) {
 
     } catch (err) {
         console.error("Error register:", err);
-        const msg = err.detail || err.message || "Error al registrarse";
-        return res.render("auth/register", { error: msg, success: null, user: null });
+
+        let msg = "Error al registrarse";
+
+        // Manejar errores de FastAPI
+        if (err.detail) {
+            if (Array.isArray(err.detail)) {
+                // Combinar todos los mensajes en un string
+                msg = err.detail.map(e => {
+                    // mostrar campo + mensaje
+                    const campo = e.loc && e.loc.length > 1 ? e.loc[1] : "campo";
+                    return `${campo}: ${e.msg}`;
+                }).join(", ");
+            } else if (typeof err.detail === "string") {
+                msg = err.detail;
+            }
+        } else if (err.message) {
+            msg = err.message;
+        }
+
+        // auth.controller.js - register
+        return res.render("auth/register", {
+            error: msg,
+            success: null,
+            user: null,
+            prevUsername: username,
+            prevEmail: email
+        });
     }
 }
+
 
 // ---------- LOGOUT ----------
 function logout(req, res) {
