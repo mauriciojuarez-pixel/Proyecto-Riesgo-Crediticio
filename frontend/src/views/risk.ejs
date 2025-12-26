@@ -3,119 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <title>Evaluación de Riesgo - Riesgo Crediticio</title>
+    <link rel="stylesheet" href="/css/styles.css">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7fa; margin: 0; padding: 0; }
-        nav { background-color: #667eea; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; color: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        nav span { font-weight: bold; font-size: 16px; }
-        nav a { color: #fff; text-decoration: none; margin-left: 20px; font-weight: 500; transition: color 0.3s; }
-        nav a:hover { color: #ffeb3b; }
-        .container { max-width: 600px; margin: 40px auto; background: #fff; padding: 40px 50px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h1 { font-size: 24px; margin-bottom: 20px; text-align: center; color: #333; }
-        form { display: flex; flex-direction: column; gap: 15px; }
-        label { font-weight: 600; color: #555; font-size: 14px; }
-        input[type="number"] { padding: 12px; border-radius: 10px; border: 1px solid #ccc; font-size: 14px; transition: all 0.3s ease; }
-        input[type="number"]:focus { border-color: #667eea; box-shadow: 0 0 5px rgba(102, 126, 234, 0.5); outline: none; }
-        button { padding: 12px; border: none; border-radius: 10px; background: #667eea; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.3s, transform 0.2s; }
-        button:hover { background: #5a67d8; transform: translateY(-2px); }
-        .result { margin-top: 20px; padding: 15px; background: #f0f4ff; border-radius: 10px; font-size: 16px; color: #333; display: none; }
-        .error { margin-top: 15px; padding: 12px; background-color: #ffe0e0; color: #ff0000; border-radius: 10px; font-size: 14px; display: none; }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background: #eef2f7;
+            color: #333;
+        }
+
+        nav {
+            background-color: #4f46e5;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        nav span {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        nav a:hover {
+            color: #ffeb3b;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .container:hover {
+            transform: translateY(-3px);
+        }
+
+        h1 {
+            font-size: 26px;
+            margin-bottom: 25px;
+            color: #333;
+            text-align: center;
+        }
+
+        form input {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        form input:focus {
+            border-color: #4f46e5;
+            outline: none;
+        }
+
+        form button {
+            width: 100%;
+            padding: 12px;
+            background: #4f46e5;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        form button:hover {
+            background: #4338ca;
+        }
+
+        .resultado {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #e0e7ff;
+            text-align: center;
+            font-weight: 600;
+            color: #1e3a8a;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error {
+            color: #b91c1c;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
+    <nav>
+        <% if (user) { %>
+            <span>Bienvenido, <%= user.username %></span>
+            <div>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/auth/logout">Cerrar Sesión</a>
+            </div>
+        <% } else { %>
+            <span>Bienvenido, Invitado</span>
+            <a href="/auth/login">Iniciar Sesión</a>
+        <% } %>
+    </nav>
 
-<nav>
-    <span id="welcome">Bienvenido</span>
-    <div>
-        <a href="/dashboard">Dashboard</a>
-        <a href="#" id="logoutBtn">Cerrar Sesión</a>
+    <div class="container">
+        <h1>Evaluación de Riesgo Crediticio</h1>
+
+        <% if (error) { %>
+            <div class="error"><%= error %></div>
+        <% } %>
+
+        <form id="riskForm">
+            <input type="number" name="ingreso" placeholder="Ingreso mensual" required>
+            <input type="number" name="deuda_ratio" placeholder="Ratio de deuda" required>
+            <input type="number" name="antiguedad" placeholder="Años de antigüedad laboral" required>
+            <input type="number" name="estabilidad_laboral" placeholder="Estabilidad laboral (1-5)" required>
+            <button type="submit">Evaluar Riesgo</button>
+        </form>
+
+        <div class="resultado" id="resultado"></div>
     </div>
-</nav>
 
-<div class="container">
-    <h1>Evaluación de Riesgo Crediticio</h1>
-    <form id="riskForm">
-        <label>Ingreso mensual</label>
-        <input type="number" name="ingreso" required min="0" step="any">
+    <script>
+        const form = document.getElementById("riskForm");
+        const resultadoDiv = document.getElementById("resultado");
 
-        <label>Ratio de deuda</label>
-        <input type="number" name="deuda_ratio" required min="0" max="100" step="any">
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            resultadoDiv.textContent = "Evaluando...";
 
-        <label>Antigüedad laboral (años)</label>
-        <input type="number" name="antiguedad" required min="0" step="1">
+            const formData = new FormData(form);
+            const datos = Object.fromEntries(formData.entries());
 
-        <label>Estabilidad laboral (1-10)</label>
-        <input type="number" name="estabilidad_laboral" required min="1" max="10" step="1">
+            try {
+                const res = await fetch("/risk/predict", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(datos)
+                });
 
-        <button type="submit">Evaluar Riesgo</button>
-    </form>
-
-    <div id="error" class="error"></div>
-    <div id="resultado" class="result"></div>
-</div>
-
-<script>
-    // Obtener usuario y token desde localStorage
-    const user = JSON.parse(localStorage.getItem('user'));
-    const token = localStorage.getItem('token');
-
-    if (!user || !token) {
-        window.location.href = '/auth/login';
-    } else {
-        document.getElementById('welcome').textContent = `Bienvenido, ${user.nombre}`;
-    }
-
-    // Logout
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/auth/login';
-    });
-
-    const form = document.getElementById('riskForm');
-    const errorDiv = document.getElementById('error');
-    const resultadoDiv = document.getElementById('resultado');
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        errorDiv.style.display = 'none';
-        resultadoDiv.style.display = 'none';
-
-        const formData = new FormData(form);
-        const data = {
-            ingreso: Number(formData.get('ingreso')),
-            deuda_ratio: Number(formData.get('deuda_ratio')),
-            antiguedad: Number(formData.get('antiguedad')),
-            estabilidad_laboral: Number(formData.get('estabilidad_laboral'))
-        };
-
-        try {
-            const res = await fetch('https://riesgo-backend-w5jn.onrender.com/risk/predict_risk', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ ...data, cliente_id: user.id })
-            });
-
-            const result = await res.json();
-
-            if (!res.ok) {
-                errorDiv.textContent = result.detail || 'Error al evaluar riesgo';
-                errorDiv.style.display = 'block';
-                return;
+                const data = await res.json();
+                if (res.ok) {
+                    resultadoDiv.textContent = `Riesgo: ${data.riesgo || "No disponible"}`;
+                } else {
+                    resultadoDiv.textContent = `Error: ${data.error || "No se pudo evaluar"}`;
+                }
+            } catch (err) {
+                resultadoDiv.textContent = "Error de conexión con el servidor";
             }
-
-            resultadoDiv.textContent = `Nivel de riesgo: ${result.risk_level || 'No disponible'}. Probabilidad: ${result.probabilidad || 'No disponible'}`;
-            resultadoDiv.style.display = 'block';
-
-        } catch (err) {
-            console.error(err);
-            errorDiv.textContent = 'Error de conexión con el servidor';
-            errorDiv.style.display = 'block';
-        }
-    });
-</script>
-
+        });
+    </script>
 </body>
 </html>
