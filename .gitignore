@@ -1,5 +1,5 @@
 .venv/
 pruebas/
 frontend/node_modules/
-.env/
-s
+backend/.env
+frontend/.env

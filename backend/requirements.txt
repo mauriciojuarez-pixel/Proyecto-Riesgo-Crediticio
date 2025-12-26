@@ -8,14 +8,8 @@ joblib
 python-multipart
 pymongo
 python-dotenv
-
-
-
-# pip install -r requirements.txt
-
-pymongo
+passlib[bcrypt]==1.7.4
+python-jose[cryptography]
+pydantic[email]
 packaging
 networkx
-pydantic[email]
-passlib[bcrypt]==1.7.4
-jose
