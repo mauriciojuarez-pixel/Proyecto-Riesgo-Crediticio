@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { getToken } = require("../utils/token");
+const { getToken } = require("./utils/token");
 
 // Detecta entorno automáticamente
 const API_URL = process.env.API_URL || "http://localhost:8000";
