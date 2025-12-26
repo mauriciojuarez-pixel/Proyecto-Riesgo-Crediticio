@@ -1,14 +1,25 @@
 // frontend/src/routes/admin.routes.js
 const express = require("express");
 const router = express.Router();
-const adminController = require("../controllers/admin.controller.js");
+
+// Importamos controladores
+const {
+    renderDashboard,
+    usuarios,
+    solicitudes,
+    decisiones,
+    retroalimentacion
+} = require("../controllers/admin.controller.js");
+
+// Middleware de autenticación
 const { ensureAuthenticated } = require("../middlewares/auth.middleware.js");
 
-// Dashboard y vistas admin
-router.get("/", ensureAuthenticated, adminController.renderDashboard);
-router.get("/usuarios", ensureAuthenticated, adminController.usuarios);
-router.get("/solicitudes", ensureAuthenticated, adminController.solicitudes);
-router.get("/decisiones", ensureAuthenticated, adminController.decisiones);
-router.get("/retroalimentacion", ensureAuthenticated, adminController.retroalimentacion);
+// Rutas del panel de administración
+router.get("/", ensureAuthenticated, renderDashboard);
+router.get("/usuarios", ensureAuthenticated, usuarios);
+router.get("/solicitudes", ensureAuthenticated, solicitudes);
+router.get("/decisiones", ensureAuthenticated, decisiones);
+router.get("/retroalimentacion", ensureAuthenticated, retroalimentacion);
 
+// Exportamos el router
 module.exports = router;
