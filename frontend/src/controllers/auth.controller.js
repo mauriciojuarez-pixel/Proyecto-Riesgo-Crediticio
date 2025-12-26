@@ -1,5 +1,5 @@
 // frontend/src/controllers/auth.controller.js
-const authService = require("../service/auth.service");
+const authService = require("../services/auth.service.js");
 
 // ---------- RENDER LOGIN ----------
 function renderLogin(req, res) {
