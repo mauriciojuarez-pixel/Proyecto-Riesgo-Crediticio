@@ -5,20 +5,18 @@ from ..core.security import hash_password, verify_password, create_access_token
 from ..database import crud
 from datetime import datetime, timedelta
 from typing import Annotated
-import logging
 
 router = APIRouter(prefix="/auth", tags=["Autenticación"])
 
-# Configurar logger
-logger = logging.getLogger("auth_routes")
-logging.basicConfig(level=logging.INFO)
+# -------------------- CONSTANTES --------------------
+MAX_BCRYPT_PASSWORD_LENGTH = 72  # Bcrypt no acepta más de 72 bytes
 
 # -------------------- ESQUEMAS --------------------
 
 class RegistroUsuario(BaseModel):
     username: Annotated[str, Field(min_length=3, max_length=50)]
     email: EmailStr
-    password: Annotated[str, Field(min_length=6)]  # eliminamos límite manual aquí
+    password: Annotated[str, Field(min_length=6, max_length=MAX_BCRYPT_PASSWORD_LENGTH)]
 
 class LoginUsuario(BaseModel):
     email: EmailStr
@@ -34,11 +32,9 @@ def register(user: RegistroUsuario):
     if crud.get_user_by_email(user.email):
         raise HTTPException(status_code=400, detail="Usuario ya existe")
 
-    hashed_pwd = hash_password(user.password)
-    
-    # Log si la contraseña fue truncada
-    if len(user.password.encode('utf-8')) > 72:
-        logger.warning(f"Contraseña truncada para el usuario {user.email} (bcrypt máximo 72 bytes)")
+    # Cortar la contraseña si excede el límite de bcrypt
+    password_to_hash = user.password[:MAX_BCRYPT_PASSWORD_LENGTH]
+    hashed_pwd = hash_password(password_to_hash)
 
     user_doc = {
         "username": user.username,
@@ -63,7 +59,7 @@ def login(user: LoginUsuario):
     """
     db_user = crud.get_user_by_email(user.email)
     
-    if not db_user or not verify_password(user.password, db_user["password_hash"]):
+    if not db_user or not verify_password(user.password[:MAX_BCRYPT_PASSWORD_LENGTH], db_user["password_hash"]):
         raise HTTPException(status_code=401, detail="Credenciales inválidas")
 
     crud.update_user_login(str(db_user["_id"]))
