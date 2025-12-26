@@ -139,10 +139,13 @@
     <div class="container">
         <h1>Evaluación de Riesgo Crediticio</h1>
 
-        <div class="info">
-            En esta vista puedes evaluar el riesgo crediticio de un usuario. <br>
-            Llena todos los campos con los datos solicitados y presiona <strong>Evaluar Riesgo</strong> para obtener el resultado.
-        </div>
+        <p class="hint">
+            Complete los campos a continuación.  
+            <strong>Ingreso mensual:</strong> monto total que percibe al mes.<br>
+            <strong>Ratio de deuda:</strong> proporción de deuda actual sobre ingreso (ej. 0.2 = 20%).<br>
+            <strong>Años en el empleo actual:</strong> tiempo que lleva en su trabajo actual.<br>
+            <strong>Estabilidad laboral:</strong> del 1 al 10, donde 10 es muy estable.
+        </p>
 
         <% if (error) { %>
             <div class="error"><%= error %></div>
