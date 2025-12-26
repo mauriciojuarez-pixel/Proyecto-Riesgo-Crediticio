@@ -1,4 +1,3 @@
-// frontend/src/controllers/auth.controller.js
 const fetch = require("node-fetch");
 
 // -------------------- LOGIN --------------------
@@ -15,36 +14,21 @@ async function login(req, res) {
         const data = await response.json();
 
         if (!response.ok) {
-            // Renderiza login con error
-            return res.render("login", { error: data.detail || "Error al iniciar sesión" });
+            return res.render("login", { error: data.detail || "Error al iniciar sesión", user: null });
         }
 
-        // Guardar usuario y token en sesión del frontend
+        // Guardar usuario y token en sesión
         req.session.user = data.user;
         req.session.token = data.access_token;
 
-        // Redirigir al dashboard
-        return res.redirect("/dashboard");
+        res.redirect("/dashboard");
 
     } catch (err) {
         console.error("Error login:", err);
-        return res.render("login", { error: "Error de conexión con el servidor" });
+        res.render("login", { error: "Error de conexión con el servidor", user: null });
     }
 }
 
-// -------------------- LOGOUT --------------------
-function logout(req, res) {
-    req.session.destroy(err => {
-        if (err) {
-            console.error("Error al cerrar sesión:", err);
-            return res.redirect("/dashboard");
-        }
-        res.clearCookie("connect.sid"); // Limpiar cookie de sesión
-        res.redirect("/login");
-    });
-}
-
-// -------------------- REGISTER --------------------
 // -------------------- REGISTER --------------------
 async function register(req, res) {
     const { username, email, password } = req.body;
@@ -59,29 +43,27 @@ async function register(req, res) {
         const data = await response.json();
 
         if (!response.ok) {
-            // Si hubo error en el backend, mostrarlo en la vista
-            return res.render("auth/register", { error: data.detail || "Error al registrarse", resultado: null });
+            return res.render("register", { error: data.detail || "Error al registrarse", success: null, user: null });
         }
 
-        // Registro exitoso: enviamos la info al frontend en "resultado"
-        return res.render("auth/register", {
-            error: null,
-            resultado: {
-                user_id: data.user.id || data.user._id,
-                nombre: data.user.username,
-                email: data.user.email
-            }
-        });
+        res.render("register", { error: null, success: "Registro exitoso, inicia sesión", user: null });
 
     } catch (err) {
         console.error("Error register:", err);
-        return res.render("auth/register", { error: "Error de conexión con el servidor", resultado: null });
+        res.render("register", { error: "Error de conexión con el servidor", success: null, user: null });
     }
 }
 
-// -------------------- EXPORT --------------------
-module.exports = {
-    login,
-    logout,
-    register
-};
+// -------------------- LOGOUT --------------------
+function logout(req, res) {
+    req.session.destroy(err => {
+        if (err) {
+            console.error("Error al cerrar sesión:", err);
+            return res.redirect("/dashboard");
+        }
+        res.clearCookie("connect.sid");
+        res.redirect("/auth/login");
+    });
+}
+
+module.exports = { login, register, logout };

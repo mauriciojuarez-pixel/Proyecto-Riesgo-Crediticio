@@ -4,104 +4,6 @@
     <meta charset="UTF-8">
     <title>Registro - Riesgo Crediticio</title>
     <link rel="stylesheet" href="/css/styles.css">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            background: #eef2f7;
-            color: #333;
-        }
-
-        nav {
-            background-color: #4f46e5;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #fff;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        nav span {
-            font-weight: 600;
-            font-size: 16px;
-        }
-
-        nav a {
-            color: #fff;
-            text-decoration: none;
-            margin-left: 20px;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-
-        nav a:hover {
-            color: #ffeb3b;
-        }
-
-        .container {
-            max-width: 400px;
-            margin: 50px auto;
-            background: #fff;
-            padding: 40px 30px;
-            border-radius: 15px;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.08);
-        }
-
-        h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #333;
-        }
-
-        form input {
-            width: 100%;
-            padding: 12px 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-        }
-
-        form input:focus {
-            border-color: #4f46e5;
-            outline: none;
-        }
-
-        form button {
-            width: 100%;
-            padding: 12px;
-            background: #4f46e5;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        form button:hover {
-            background: #4338ca;
-        }
-
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .alert-success {
-            background-color: #d1fae5;
-            color: #065f46;
-        }
-
-        .alert-error {
-            background-color: #fee2e2;
-            color: #991b1b;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -111,30 +13,18 @@
             <div class="alert alert-danger"><%= error %></div>
         <% } %>
 
-        <form action="/auth/register" method="POST">
-            <label>Nombre:</label>
-            <input type="text" name="username" placeholder="Tu nombre completo" required>
-
-            <label>Email:</label>
-            <input type="email" name="email" placeholder="tu@email.com" required>
-
-            <label>Contraseña:</label>
-            <input type="password" name="password" placeholder="********" required>
-
-            <button type="submit">Registrar</button>
-        </form>
-
-        <% if (resultado) { %>
-            <div class="alert alert-success">
-                <h2>Registro exitoso</h2>
-                <p>ID del usuario: <%= resultado.user_id %></p>
-                <p>Nombre: <%= resultado.nombre %></p>
-                <p>Email: <%= resultado.email %></p>
-            </div>
+        <% if (success) { %>
+            <div class="alert alert-success"><%= success %></div>
         <% } %>
+
+        <form action="/auth/register" method="POST">
+            <input type="text" name="username" placeholder="Nombre completo" required>
+            <input type="email" name="email" placeholder="Correo electrónico" required>
+            <input type="password" name="password" placeholder="Contraseña" required>
+            <button type="submit">Registrarse</button>
+        </form>
 
         <p>¿Ya tienes cuenta? <a href="/auth/login">Inicia sesión</a></p>
     </div>
 </body>
-
 </html>

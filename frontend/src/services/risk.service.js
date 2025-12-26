@@ -1,29 +1,22 @@
-// frontend/src/services/risk.services.js
+const BASE_URL = "https://riesgo-backend-w5jn.onrender.com";
 
-const axios = require("axios");
+const riskService = {
 
-// Detecta entorno automáticamente
-const API_URL = process.env.API_URL || "http://localhost:8000";
-
-async function evaluarRiesgo(datos, tokenFromSession = null) {
-    try {
-        // Si el token no se pasa desde el frontend, se asumirá que el backend ya tiene la sesión
-        const res = await axios.post(`${API_URL}/risk/predict_risk`, datos, {
+    evaluarRiesgo: async (datos, token) => {
+        const res = await fetch(`${BASE_URL}/risk/predict_risk`, {
+            method: "POST",
             headers: {
-                Authorization: tokenFromSession ? `Bearer ${tokenFromSession}` : undefined,
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                ...(token ? { "Authorization": `Bearer ${token}` } : {})
             },
-            timeout: 10000
+            body: JSON.stringify(datos)
         });
 
-        return res.data;
-
-    } catch (err) {
-        console.error("Error al evaluar riesgo:", err.response?.data || err.message);
-        throw new Error(err.response?.data?.detail || "No se pudo evaluar el riesgo crediticio");
+        const data = await res.json();
+        if (!res.ok) throw data;
+        return data;
     }
-}
 
-module.exports = {
-    evaluarRiesgo
 };
+
+module.exports = riskService;

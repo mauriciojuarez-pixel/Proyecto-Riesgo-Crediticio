@@ -1,45 +1,52 @@
-// app.js
+require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
-const dotenv = require("dotenv");
+const bodyParser = require("body-parser");
 
-// Cargar variables de entorno
-dotenv.config();
-
-const app = express();
-
-// Middlewares globales
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Sesión (MemoryStore es suficiente para Render de prueba; en prod usar Redis o DB)
-app.use(session({
-    secret: process.env.SESSION_SECRET || "mi_secret_key",
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 } // 1 hora
-}));
-
-// Static files
-app.use(express.static(path.join(__dirname, "src/public"))); // CSS, JS, imágenes
-
-// Configuración de EJS
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "src/views"));
+// Importar middlewares
+const { redirectIfAuthenticated } = require("./src/middlewares/auth.middleware.js");
+const { handleErrors } = require("./src/middlewares/error.middleware.js");
 
 // Importar rutas
 const authRoutes = require("./src/routes/auth.routes.js");
-const adminRoutes = require("./src/routes/admin.routes.js");
 const riskRoutes = require("./src/routes/risk.routes.js");
+const adminRoutes = require("./src/routes/admin.routes.js");
 
-// Middlewares
-const { errorHandler } = require("./src/middlewares/error.middleware.js");
+// Crear la app
+const app = express();
 
-// Rutas principales
+// Configuración de vistas
+app.set("views", path.join(__dirname, "src/views"));
+app.set("view engine", "ejs");
+
+// Archivos estáticos
+app.use(express.static(path.join(__dirname, "public")));
+
+// Middleware para parsing de requests
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// Configuración de sesión
+app.use(session({
+    secret: process.env.SESSION_SECRET || "secretkey123",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 día
+}));
+
+// Rutas
 app.use("/auth", authRoutes);
-app.use("/admin", adminRoutes);
 app.use("/risk", riskRoutes);
+app.use("/admin", adminRoutes);
+
+// Ruta principal
+app.get("/", (req, res) => {
+    if (req.session.user) {
+        return res.redirect("/dashboard");
+    }
+    res.redirect("/auth/login");
+});
 
 // Dashboard
 app.get("/dashboard", (req, res) => {
@@ -47,14 +54,8 @@ app.get("/dashboard", (req, res) => {
     res.render("dashboard", { user: req.session.user });
 });
 
-// Página raíz
-app.get("/", (req, res) => {
-    if (req.session.user) return res.redirect("/dashboard");
-    res.redirect("/auth/login");
-});
-
-// Middleware de manejo de errores
-app.use(errorHandler);
+// Manejo de errores
+app.use(handleErrors);
 
 // Puerto
 const PORT = process.env.PORT || 3000;

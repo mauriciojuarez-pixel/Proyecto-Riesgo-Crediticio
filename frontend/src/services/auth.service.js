@@ -1,39 +1,35 @@
-// frontend/src/services/auth.services.js
+const BASE_URL = "https://riesgo-backend-w5jn.onrender.com";
 
-const axios = require("axios");
+const authService = {
 
-// Detecta entorno automáticamente
-const API_URL = process.env.API_URL || "http://localhost:8000";
-
-async function register(data) {
-    try {
-        const response = await axios.post(`${API_URL}/auth/register`, data, {
+    login: async (email, password) => {
+        const res = await fetch(`${BASE_URL}/auth/login`, {
+            method: "POST",
             headers: { "Content-Type": "application/json" },
-            timeout: 10000,
-            withCredentials: true // IMPORTANTE: para manejar cookies de sesión
+            body: JSON.stringify({ email, password })
         });
-        return response.data;
-    } catch (err) {
-        console.error("Error en registro:", err.response?.data || err.message);
-        throw new Error(err.response?.data?.detail || "Error en el registro");
-    }
-}
 
-async function login(data) {
-    try {
-        const response = await axios.post(`${API_URL}/auth/login`, data, {
+        const data = await res.json();
+        if (!res.ok) throw data;
+        return data;
+    },
+
+    register: async (username, email, password) => {
+        const res = await fetch(`${BASE_URL}/auth/register`, {
+            method: "POST",
             headers: { "Content-Type": "application/json" },
-            timeout: 10000,
-            withCredentials: true // IMPORTANTE: permite que la sesión se guarde en cookies
+            body: JSON.stringify({ username, email, password })
         });
-        return response.data; // Puede ser { redirect: "/dashboard" } o un mensaje
-    } catch (err) {
-        console.error("Error en login:", err.response?.data || err.message);
-        throw new Error(err.response?.data?.detail || "Usuario o contraseña incorrecta");
-    }
-}
 
-module.exports = {
-    register,
-    login,
+        const data = await res.json();
+        if (!res.ok) throw data;
+        return data;
+    },
+
+    logout: async (token) => {
+        // En este caso, opcional si backend maneja logout
+        return true;
+    }
 };
+
+module.exports = authService;

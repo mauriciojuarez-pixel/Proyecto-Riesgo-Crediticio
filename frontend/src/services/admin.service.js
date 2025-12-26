@@ -1,63 +1,48 @@
-const axios = require("axios");
+const BASE_URL = "https://riesgo-backend-w5jn.onrender.com";
 
-// Detecta entorno automáticamente
-const API_URL = process.env.API_URL || "http://localhost:8000";
+const adminService = {
 
-const api = axios.create({
-    baseURL: API_URL,
-    timeout: 10000,
-    headers: { "Content-Type": "application/json" }
-});
+    getUsuarios: async (token) => {
+        const res = await fetch(`${BASE_URL}/admin/usuarios`, {
+            headers: {
+                "Content-Type": "application/json",
+                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+            }
+        });
 
-// Ahora recibimos el token como parámetro
-function authHeader(token) {
-    if (!token) throw new Error("Token no encontrado en sesión");
-    return { Authorization: `Bearer ${token}` };
-}
+        const data = await res.json();
+        if (!res.ok) throw data;
+        return data;
+    },
 
-async function getUsuarios(token) {
-    try {
-        const res = await api.get("/admin/usuarios", { headers: authHeader(token) });
-        return res.data.usuarios;
-    } catch (err) {
-        console.error("Error obteniendo usuarios:", err.response?.data || err.message);
-        throw new Error(err.response?.data?.detail || "No se pudo cargar usuarios");
+    getSolicitudes: async (token) => {
+        const res = await fetch(`${BASE_URL}/admin/solicitudes`, {
+            headers: {
+                "Content-Type": "application/json",
+                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+            }
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw data;
+        return data;
+    },
+
+    actualizarDecision: async (id, decision, token) => {
+        const res = await fetch(`${BASE_URL}/admin/decisiones/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+            },
+            body: JSON.stringify({ decision })
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw data;
+        return data;
     }
-}
 
-async function getSolicitudes(token) {
-    try {
-        const res = await api.get("/admin/solicitudes", { headers: authHeader(token) });
-        return res.data.solicitudes;
-    } catch (err) {
-        console.error("Error obteniendo solicitudes:", err.response?.data || err.message);
-        throw new Error(err.response?.data?.detail || "No se pudo cargar solicitudes");
-    }
-}
-
-async function getDecisiones(token) {
-    try {
-        const res = await api.get("/admin/decisiones", { headers: authHeader(token) });
-        return res.data.decisiones;
-    } catch (err) {
-        console.error("Error obteniendo decisiones:", err.response?.data || err.message);
-        throw new Error(err.response?.data?.detail || "No se pudo cargar decisiones");
-    }
-}
-
-async function getFeedback(token) {
-    try {
-        const res = await api.get("/admin/retroalimentacion", { headers: authHeader(token) });
-        return res.data.retroalimentacion;
-    } catch (err) {
-        console.error("Error obteniendo feedback:", err.response?.data || err.message);
-        throw new Error(err.response?.data?.detail || "No se pudo cargar retroalimentación");
-    }
-}
-
-module.exports = {
-    getUsuarios,
-    getSolicitudes,
-    getDecisiones,
-    getFeedback
 };
+
+module.exports = adminService;
