@@ -16,7 +16,8 @@ for (const [key, fn] of Object.entries(authController)) {
     }
 }
 
-// Mostrar login
+// -------------------- LOGIN --------------------
+// Mostrar formulario de login
 router.get("/login", redirectIfAuthenticated, (req, res) => {
     res.render("auth/login", { error: null });
 });
@@ -24,8 +25,17 @@ router.get("/login", redirectIfAuthenticated, (req, res) => {
 // Procesar login
 router.post("/login", authController.login);
 
-// Logout
+// -------------------- LOGOUT --------------------
 router.get("/logout", authController.logout);
+
+// -------------------- REGISTER --------------------
+// Mostrar formulario de registro
+router.get("/register", redirectIfAuthenticated, (req, res) => {
+    res.render("auth/register", { error: null, success: null });
+});
+
+// Procesar registro
+router.post("/register", authController.register);
 
 // Exportamos el router
 module.exports = router;
