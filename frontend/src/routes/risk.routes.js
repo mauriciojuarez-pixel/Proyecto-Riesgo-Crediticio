@@ -1,7 +1,11 @@
+// frontend/src/routes/risk.routes.js
+
 const express = require("express");
 const router = express.Router();
 const riskController = require("../controllers/risk.controller");
-const authMiddleware = require("../middlewares/auth.middleware");
+
+// IMPORT CORRECTO: desestructurando
+const { authMiddleware } = require("../middlewares/auth.middleware");
 
 // Página de evaluación de riesgo
 router.get("/dashboard", authMiddleware, riskController.renderRisk);
