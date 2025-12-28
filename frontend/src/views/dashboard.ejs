@@ -137,6 +137,27 @@
             font-size: 13px;
             overflow-x: auto;
         }
+
+        .intelligent-card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 20px;
+        }
+
+        .intelligent-card h3 {
+            color: #2563eb;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .intelligent-card p {
+            margin: 6px 0;
+        }
+
     </style>
 </head>
 <body>
@@ -228,8 +249,24 @@
                     </pre>
                 </div>
 
+                <div class="intelligent-card" style="grid-column: 1 / -1;">
+                    <h3>Por qué es un Sistema Inteligente</h3>
+                    <p><strong>Aprendizaje Predictivo (Machine Learning):</strong> Utiliza un modelo ML entrenado con datos históricos para predecir la probabilidad de incumplimiento (P_inc_ML) de cada cliente. Esto le permite aprender patrones de comportamiento financiero, algo que un sistema tradicional no puede hacer.</p>
+
+                    <p><strong>Razonamiento Humano Simulado (Lógica Difusa):</strong> Combina la salida del modelo ML con variables como antigüedad laboral, estabilidad laboral y ratio de deuda. Clasifica el riesgo en niveles Bajo, Medio o Alto, generando recomendaciones similares a las que tomaría un analista de riesgo humano.</p>
+
+                    <p><strong>Toma de Decisiones Automática y Contextual:</strong> Produce automáticamente decisiones accionables: Otorgar crédito, Revisar o No otorgar crédito. Cada decisión se adapta a los datos específicos del usuario, mostrando capacidad de toma de decisiones autónoma y contextualizada.</p>
+
+                    <p><strong>Persistencia y Mejora Continua:</strong> Cada evaluación se guarda en MongoDB, lo que permite auditoría, análisis histórico y mejora futura del sistema. Con el tiempo, el sistema puede reentrenar el modelo ML o ajustar reglas difusas, mostrando aprendizaje continuo.</p>
+
+                    <p><strong>Interacción Multi-Sistema:</strong> El sistema distribuye sus tareas entre Frontend (interfaz), Backend (orquestación), Motor Inteligente (ML + Fuzzy) y Base de Datos (MongoDB). Esta coordinación permite procesamiento especializado en cada capa, integración de datos y decisiones precisas, y comunicación confiable entre subsistemas.</p>
+
+                    <p><strong>Adaptabilidad y Escalabilidad:</strong> Puede integrarse con otras fuentes de datos, incorporar nuevos criterios de riesgo y ajustar sus reglas y modelos según evoluciona el entorno financiero.</p>
+                </div>
+
             </div>
         </div>
+        
     </div>
 
 </body>
