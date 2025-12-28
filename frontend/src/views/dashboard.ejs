@@ -127,6 +127,16 @@
             color: #2563eb;
             font-size: 15px;
         }
+
+        .pipeline-pre {
+            background: #0f172a;
+            color: #e5e7eb;
+            padding: 12px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
     </style>
 </head>
 <body>
@@ -192,6 +202,30 @@
                         Cada evaluación se almacena en MongoDB permitiendo auditoría, análisis
                         histórico y mejora futura del sistema inteligente.
                     </p>
+                </div>
+
+                <div class="info-card" style="grid-column: 1 / -1;">
+                    <h4>Pipeline del Sistema Inteligente</h4>
+                    <pre class="pipeline-pre">
+[ Usuario ] 
+     │
+     ▼
+[ Frontend Node + EJS ] → Captura datos y envía JSON
+     │
+     ▼
+[ Backend FastAPI ] → Valida, guarda solicitud, llama Motor Inteligente
+     │
+     ▼
+[ Motor Inteligente ] 
+     ├─> ML → Probabilidad de incumplimiento
+     └─> Fuzzy → Nivel de riesgo + Recomendación
+     │
+     ▼
+[ Backend FastAPI ] → Guarda decisión en MongoDB y devuelve resultado
+     │
+     ▼
+[ Frontend ] → Muestra al usuario
+                    </pre>
                 </div>
 
             </div>
