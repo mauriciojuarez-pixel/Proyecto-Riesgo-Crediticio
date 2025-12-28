@@ -96,6 +96,37 @@
             transform: translateY(-1px);
             box-shadow: 0 6px 18px rgba(37,99,235,0.35);
         }
+
+        .system-info {
+            margin-top: 40px;
+        }
+
+        .system-info h2 {
+            font-size: 20px;
+            margin-bottom: 14px;
+            color: #0f172a;
+        }
+
+        .system-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+            gap: 18px;
+        }
+
+        .info-card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .info-card h4 {
+            margin-bottom: 6px;
+            color: #2563eb;
+            font-size: 15px;
+        }
     </style>
 </head>
 <body>
@@ -121,6 +152,49 @@
             <a href="/dashboard/risk">
                 <button class="btn-risk">Evaluar Riesgo Crediticio</button>
             </a>
+        </div>
+
+        <div class="system-info">
+            <h2>Cómo funciona tu Sistema Inteligente</h2>
+
+            <div class="system-info-grid">
+
+                <div class="info-card">
+                    <h4>Arquitectura General</h4>
+                    <p>
+                        Este sistema funciona bajo una arquitectura distribuida compuesta por Frontend,
+                        Backend, Motor Inteligente y Base de Datos. Cada componente cumple un rol específico
+                        en la evaluación del riesgo crediticio.
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <h4>Machine Learning</h4>
+                    <p>
+                        El modelo predictivo estima la probabilidad de incumplimiento del cliente
+                        basándose en datos históricos. Este valor se expresa como una probabilidad
+                        entre 0 y 1.
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <h4>Lógica Difusa</h4>
+                    <p>
+                        La lógica difusa interpreta la probabilidad obtenida por el modelo ML junto
+                        con la antigüedad, estabilidad laboral y ratio de deuda para clasificar el
+                        riesgo en niveles: Bajo, Medio o Alto.
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <h4>Persistencia y Trazabilidad</h4>
+                    <p>
+                        Cada evaluación se almacena en MongoDB permitiendo auditoría, análisis
+                        histórico y mejora futura del sistema inteligente.
+                    </p>
+                </div>
+
+            </div>
         </div>
     </div>
 

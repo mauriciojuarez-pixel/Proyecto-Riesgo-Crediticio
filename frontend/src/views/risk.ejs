@@ -22,9 +22,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
-        nav span {
-            font-weight: 600;
-        }
+        nav span { font-weight: 600; }
 
         nav a {
             color: #fff;
@@ -35,9 +33,7 @@
             border-radius: 8px;
         }
 
-        nav a:hover {
-            background: #dc2626;
-        }
+        nav a:hover { background: #dc2626; }
 
         .risk-container {
             max-width: 900px;
@@ -52,10 +48,7 @@
             box-shadow: 0 12px 30px rgba(0,0,0,0.08);
         }
 
-        .risk-card h1 {
-            margin-bottom: 20px;
-            color: #0f172a;
-        }
+        .risk-card h1 { margin-bottom: 20px; color: #0f172a; }
 
         .risk-grid {
             display: grid;
@@ -68,7 +61,6 @@
             border-radius: 10px;
             border: 1px solid #cbd5e1;
             font-size: 14px;
-            transition: all 0.2s ease;
         }
 
         .risk-grid input:focus {
@@ -87,8 +79,6 @@
             color: #fff;
             font-weight: 600;
             cursor: pointer;
-            font-size: 15px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .btn-evaluar:hover {
@@ -104,91 +94,114 @@
             font-size: 14px;
         }
 
-        .resultado.exito {
-            background: #dcfce7;
-            color: #166534;
+        .resultado.exito { background: #dcfce7; color: #166534; }
+        .resultado.error { background: #fee2e2; color: #991b1b; }
+
+        .implementacion {
+            margin-top: 30px;
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 20px;
+            font-size: 14px;
         }
 
-        .resultado.error {
-            background: #fee2e2;
-            color: #991b1b;
+        .implementacion h3 { color: #2563eb; margin-bottom: 10px; }
+
+        .json-box {
+            background: #0f172a;
+            color: #e5e7eb;
+            padding: 14px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 13px;
         }
     </style>
 </head>
 <body>
 
-    <nav>
-        <span>Hola, <%= user.username %></span>
-        <a href="/auth/logout">Cerrar Sesión</a>
-    </nav>
+<nav>
+    <span>Hola, <%= user.username %></span>
+    <a href="/auth/logout">Cerrar Sesión</a>
+</nav>
 
-    <div class="risk-container">
-        <div class="risk-card">
-            <h1>Evaluación de Riesgo Crediticio</h1>
+<div class="risk-container">
+    <div class="risk-card">
+        <h1>Evaluación de Riesgo Crediticio</h1>
 
-            <form id="riskForm">
-                <div class="risk-grid">
-                    <input type="number" name="ingreso" placeholder="Ingreso mensual" step="0.01" required>
-                    <input type="number" name="deuda_ratio" placeholder="Ratio de deuda (%)" step="0.01" required>
-                    <input type="number" name="antiguedad" placeholder="Años de antigüedad laboral" required>
-                    <input type="number" name="estabilidad_laboral" placeholder="Estabilidad laboral (1-5)" min="1" max="5" required>
-                </div>
+        <form id="riskForm">
+            <div class="risk-grid">
+                <input type="number" name="ingreso" placeholder="Ingreso mensual" step="0.01" required>
+                <input type="number" name="deuda_ratio" placeholder="Ratio de deuda (%)" step="0.01" required>
+                <input type="number" name="antiguedad" placeholder="Años de antigüedad laboral" required>
+                <input type="number" name="estabilidad_laboral" placeholder="Estabilidad laboral (1-5)" min="1" max="5" required>
+            </div>
+            <button type="submit" class="btn-evaluar">Evaluar Riesgo</button>
+        </form>
 
-                <button type="submit" class="btn-evaluar">Evaluar Riesgo</button>
-            </form>
+        <div class="resultado" id="resultado"></div>
 
-            <div class="resultado" id="resultado"></div>
+        <div class="implementacion">
+            <h3>Ejemplo de implementación de datos</h3>
+            <p>El backend recibe un objeto JSON con la siguiente estructura:</p>
+            <div class="json-box">
+{
+  "ingreso": 12000,
+  "deuda_ratio": 0.98,
+  "antiguedad": 10,
+  "estabilidad_laboral": 8
+}
+            </div>
         </div>
     </div>
+</div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const form = document.getElementById("riskForm");
-            const resultadoDiv = document.getElementById("resultado");
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("riskForm");
+    const resultadoDiv = document.getElementById("resultado");
 
-            form.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                resultadoDiv.textContent = "Evaluando riesgo...";
-                resultadoDiv.className = "resultado";
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        resultadoDiv.textContent = "Evaluando riesgo...";
+        resultadoDiv.className = "resultado";
 
-                const formData = new FormData(form);
-                const datos = Object.fromEntries(formData.entries());
+        const formData = new FormData(form);
+        const datos = Object.fromEntries(formData.entries());
 
-                datos.ingreso = parseFloat(datos.ingreso);
-                datos.deuda_ratio = parseFloat(datos.deuda_ratio);
-                datos.antiguedad = parseInt(datos.antiguedad);
-                datos.estabilidad_laboral = parseInt(datos.estabilidad_laboral);
+        datos.ingreso = parseFloat(datos.ingreso);
+        datos.deuda_ratio = parseFloat(datos.deuda_ratio);
+        datos.antiguedad = parseInt(datos.antiguedad);
+        datos.estabilidad_laboral = parseInt(datos.estabilidad_laboral);
 
-                try {
-                    const res = await fetch("/risk/predict", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(datos)
-                    });
-
-                    const data = await res.json();
-
-                    if (!res.ok) {
-                        resultadoDiv.textContent = "Error: " + (data.error || data.detail || "No se pudo evaluar");
-                        resultadoDiv.classList.add("error");
-                        return;
-                    }
-
-                    resultadoDiv.innerHTML = `
-                        <p><strong>Probabilidad de Incumplimiento:</strong> ${(data.P_inc_ML * 100).toFixed(2)}%</p>
-                        <p><strong>Nivel de Riesgo:</strong> ${data.Riesgo_Final_LF}</p>
-                        <p><strong>Recomendación:</strong> ${data.Recomendacion}</p>
-                    `;
-                    resultadoDiv.classList.add("exito");
-
-                } catch (err) {
-                    console.error("Error frontend:", err);
-                    resultadoDiv.textContent = "Error de conexión con el servidor";
-                    resultadoDiv.classList.add("error");
-                }
+        try {
+            const res = await fetch("/risk/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(datos)
             });
-        });
-    </script>
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                resultadoDiv.textContent = "Error: " + (data.error || data.detail || "No se pudo evaluar");
+                resultadoDiv.classList.add("error");
+                return;
+            }
+
+            resultadoDiv.innerHTML = `
+                <p><strong>Probabilidad de Incumplimiento:</strong> ${(data.P_inc_ML * 100).toFixed(2)}%</p>
+                <p><strong>Nivel de Riesgo:</strong> ${data.Riesgo_Final_LF}</p>
+                <p><strong>Recomendación:</strong> ${data.Recomendacion}</p>
+            `;
+            resultadoDiv.classList.add("exito");
+
+        } catch (err) {
+            resultadoDiv.textContent = "Error de conexión con el servidor";
+            resultadoDiv.classList.add("error");
+        }
+    });
+});
+</script>
 
 </body>
 </html>
