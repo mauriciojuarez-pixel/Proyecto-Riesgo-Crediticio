@@ -1,32 +1,134 @@
 <!-- frontend/src/views/auth/login.ejs -->
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Login - Riesgo Crediticio</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .login-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-card h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 26px;
+            color: #0f172a;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(37,99,235,0.35);
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 14px;
+        }
+
+        .footer-text a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Iniciar Sesión</h1>
 
-        <% 
-            // Aseguramos que la variable 'error' exista
-            const errorMsg = typeof error !== 'undefined' && error ? error : null;
-        %>
+    <div class="login-card">
+        <h1>Bienvenido</h1>
+
+        <% const errorMsg = typeof error !== 'undefined' && error ? error : null; %>
 
         <% if (errorMsg) { %>
-            <div class="alert alert-danger"><%= errorMsg %></div>
+            <div class="alert-danger"><%= errorMsg %></div>
         <% } %>
 
         <form action="/auth/login" method="POST">
-            <input type="email" name="email" placeholder="Correo electrónico" required>
-            <input type="password" name="password" placeholder="Contraseña" required>
-            <button type="submit">Iniciar Sesión</button>
+            <div class="form-group">
+                <input type="email" name="email" placeholder="Correo electrónico" required>
+            </div>
+
+            <div class="form-group">
+                <input type="password" name="password" placeholder="Contraseña" required>
+            </div>
+
+            <button class="btn-login" type="submit">Iniciar Sesión</button>
         </form>
 
-        <p>¿No tienes cuenta? <a href="/auth/register">Regístrate aquí</a></p>
+        <div class="footer-text">
+            ¿No tienes cuenta?
+            <a href="/auth/register">Regístrate aquí</a>
+        </div>
     </div>
+
 </body>
 </html>

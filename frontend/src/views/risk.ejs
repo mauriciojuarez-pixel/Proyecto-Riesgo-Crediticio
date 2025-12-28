@@ -4,31 +4,141 @@
 <head>
     <meta charset="UTF-8">
     <title>Evaluación de Riesgo - Riesgo Crediticio</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        .resultado { margin-top: 20px; padding: 15px; border-radius: 8px; font-weight: bold; }
-        .resultado.exito { background-color: #d4edda; color: #155724; }
-        .resultado.error { background-color: #f8d7da; color: #721c24; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+        }
+
+        nav {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            padding: 16px 30px;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        nav span {
+            font-weight: 600;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            background: #ef4444;
+            padding: 8px 14px;
+            border-radius: 8px;
+        }
+
+        nav a:hover {
+            background: #dc2626;
+        }
+
+        .risk-container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .risk-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        }
+
+        .risk-card h1 {
+            margin-bottom: 20px;
+            color: #0f172a;
+        }
+
+        .risk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+            gap: 16px;
+        }
+
+        .risk-grid input {
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .risk-grid input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+            outline: none;
+        }
+
+        .btn-evaluar {
+            margin-top: 22px;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-evaluar:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(37,99,235,0.35);
+        }
+
+        .resultado {
+            margin-top: 22px;
+            padding: 18px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .resultado.exito {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .resultado.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
     </style>
 </head>
 <body>
+
     <nav>
-        <span>Bienvenido, <%= user.username %></span>
+        <span>Hola, <%= user.username %></span>
         <a href="/auth/logout">Cerrar Sesión</a>
     </nav>
 
-    <div class="container">
-        <h1>Evaluación de Riesgo Crediticio</h1>
+    <div class="risk-container">
+        <div class="risk-card">
+            <h1>Evaluación de Riesgo Crediticio</h1>
 
-        <form id="riskForm">
-            <input type="number" name="ingreso" placeholder="Ingreso mensual" step="0.01" required>
-            <input type="number" name="deuda_ratio" placeholder="Ratio de deuda (%)" step="0.01" required>
-            <input type="number" name="antiguedad" placeholder="Años de antigüedad laboral" required>
-            <input type="number" name="estabilidad_laboral" placeholder="Estabilidad laboral (1-5)" min="1" max="5" required>
-            <button type="submit">Evaluar Riesgo</button>
-        </form>
+            <form id="riskForm">
+                <div class="risk-grid">
+                    <input type="number" name="ingreso" placeholder="Ingreso mensual" step="0.01" required>
+                    <input type="number" name="deuda_ratio" placeholder="Ratio de deuda (%)" step="0.01" required>
+                    <input type="number" name="antiguedad" placeholder="Años de antigüedad laboral" required>
+                    <input type="number" name="estabilidad_laboral" placeholder="Estabilidad laboral (1-5)" min="1" max="5" required>
+                </div>
 
-        <div class="resultado" id="resultado"></div>
+                <button type="submit" class="btn-evaluar">Evaluar Riesgo</button>
+            </form>
+
+            <div class="resultado" id="resultado"></div>
+        </div>
     </div>
 
     <script>
@@ -79,5 +189,6 @@
             });
         });
     </script>
+
 </body>
 </html>
